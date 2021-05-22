@@ -1,17 +1,26 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {View, Text, Dimensions} from 'react-native';
+import {View, Dimensions, StyleSheet} from 'react-native';
 import {GLView} from 'expo-gl';
 import ExpoTHREE, {THREE} from 'expo-three';
-// import {Header, Button} from 'react-native-elements';
+import {
+  Header,
+  Button,
+  Tooltip,
+  Text,
+  CheckBox,
+  SpeedDial,
+  FAB,
+} from 'react-native-elements';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 
 export default function Home() {
+  const [isOpenSpeedDial, setOpenSpeedDial] = useState(false);
+  let rotationY = 0;
+
   useEffect(() => {
     THREE.suppressExpoWarnings();
   }, []);
-
-  let rotationY = 0;
 
   const onContextCreate = gl => {
     const {
@@ -28,7 +37,7 @@ export default function Home() {
     // create camera
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
 
-    camera.position.set(0, 0, 20);
+    camera.position.set(0, 2, 20);
     camera.lookAt(scene.position);
 
     // create coin object
@@ -79,7 +88,7 @@ export default function Home() {
     });
 
     const logoTexture = new ExpoTHREE.TextureLoader().load(
-      require('./testBitcoin.png'),
+      require('../img/testBitcoin.png'),
     );
 
     logoTexture.center.set(0.5, 0.5);
@@ -104,9 +113,12 @@ export default function Home() {
     ]);
     const coinBorder = new THREE.Mesh(borderGeometry, coinBorderMeterial);
 
+    coin.position.set(0, 2, 0);
+    coinBorder.position.set(0, 2, 0);
+
     scene.add(coin);
     scene.add(coinBorder);
-    scene.add(new THREE.GridHelper()); // FIXME: 삭제
+    // scene.add(new THREE.GridHelper()); // FIXME: 삭제
 
     // create light
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -126,7 +138,6 @@ export default function Home() {
     // create renderer
     const renderer = new ExpoTHREE.Renderer({gl, pixelRatio, width, height});
 
-    renderer.setClearColor(0xdfe6e9);
     renderer.setSize(width, height);
     renderer.render(scene, camera);
 
@@ -155,15 +166,57 @@ export default function Home() {
   const stopCoin = () => {};
 
   return (
-    <GLView
+    <View
       style={{
         width: screenWidth,
         height: screenHeight,
-        display: 'flex',
-        flex: 1,
-      }}
-      onContextCreate={onContextCreate}
-      onTouchStart={spinCoin}
-    />
+        backgroundColor: '#74b9ff',
+      }}>
+      <Header
+        barStyle="default"
+        containerStyle={{
+          backgroundColor: 'transparent',
+          borderBottomColor: 'transparent',
+        }}>
+        {/* <Button buttonStyle={styles.unableButton}></Button> */}
+        {/* <Button buttonStyle={styles.unableButton}></Button> */}
+        {/* <Button buttonStyle={styles.unableButton}></Button> */}
+      </Header>
+      <GLView
+        style={{
+          display: 'flex',
+          flex: 1,
+        }}
+        onContextCreate={onContextCreate}
+        onTouchStart={spinCoin}
+      />
+      <View style={styles.coinTitleView}>
+        <Text h4 style={styles.coinTitle}>
+          BTC
+        </Text>
+        {/* <Button title={'BTC'}></Button> */}
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  unableButton: {
+    backgroundColor: 'transparent',
+  },
+  coinTitleView: {
+    // backgroundColor: 'red',r
+    width: '100%',
+    position: 'absolute',
+    top: '28%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0,
+  },
+  coinTitle: {
+    // color: 'white',
+    paddingHorizontal: 20,
+    // backgroundColor: '#2980b9',
+    // fontWeight: 'bold',
+  },
+});
