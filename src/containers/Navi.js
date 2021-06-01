@@ -37,8 +37,7 @@ export default function Navi() {
 
   return (
     <NavigationContainer>
-      {/* {_.isEmpty(resInfo.data) ? <SplashStack /> : <MainStack />} */}
-      <MainStack></MainStack>
+      {_.isEmpty(resInfo.data) ? <SplashStack /> : <MainStack />}
     </NavigationContainer>
   );
 }

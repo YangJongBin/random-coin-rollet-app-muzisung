@@ -8,9 +8,10 @@ import _ from 'lodash';
 
 export default function Splash() {
   const dispatch = useDispatch();
-  const reqBithumbCoinList = useCallback(() => dispatch(getBithumbCoinList()), [
-    dispatch,
-  ]);
+  const reqBithumbCoinList = useCallback(
+    () => dispatch(getBithumbCoinList()),
+    [dispatch],
+  );
 
   const {isLoading, isError, screenMoveTarget, resInfo} = useSelector(
     state => state.bithumb,
@@ -27,8 +28,6 @@ export default function Splash() {
   // if(_.toNumber(resInfo.status) < 500){
   //     navigation.navigate('Home');
   // }
-
-  console.log('coinList ==> ', resInfo);
 
   return (
     <View>
