@@ -1,17 +1,18 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {View, Dimensions, StyleSheet} from 'react-native';
+import {View, Dimensions, StyleSheet, Animated, Image} from 'react-native';
 import {GLView} from 'expo-gl';
 import ExpoTHREE, {THREE} from 'expo-three';
 import {useSelector} from 'react-redux';
 import {Header, Text} from 'react-native-elements';
 import _ from 'lodash';
-import {ScreenStack} from 'react-native-screens';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 
 export default function Home() {
   const [bithumbCoinsInfo, setBitHumbCoinsInfo] = useState({});
   const [selectedCoinName, setSelectedCoinName] = useState();
+  const [titleOpacity, setTitleOpacity] = useState(0);
+  const [squibUrl, setSquibUrl] = useState(require('../img/default.png'));
 
   const {resInfo} = useSelector(state => state.bithumb);
 
@@ -33,7 +34,6 @@ export default function Home() {
 
   useEffect(() => {
     THREE.suppressExpoWarnings();
-
     setBitHumbCoinsInfo(resInfo.data);
   }, []);
 
@@ -128,12 +128,11 @@ export default function Home() {
         ]);
 
         that.coinBorder = new THREE.Mesh(borderGeometry, coinBorderMeterial);
-        that.coin.position.set(0, 2, 0);
-        that.coinBorder.position.set(0, 2, 0);
+        that.coin.position.set(0, 1.5, 0);
+        that.coinBorder.position.set(0, 1.5, 0);
 
         that.scene.add(that.coin);
         that.scene.add(that.coinBorder);
-        // scene.add(new THREE.GridHelper()); // FIXME: 삭제
 
         // create light
         const ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -162,42 +161,52 @@ export default function Home() {
   };
 
   const animate = () => {
+    that.animationFrame = requestAnimationFrame(animate);
     that.rotationY = THREE.MathUtils.lerp(that.rotationY, 0, 0.01);
     that.coin.rotation.y = that.rotationY;
     that.coinBorder.rotation.y = that.rotationY;
-    that.animationFrame = requestAnimationFrame(animate);
     that.renderer.render(that.scene, that.camera);
 
-    console.log(that.rotationY);
-
     if (_.floor(that.rotationY, 2) === -1.75) {
-      console.log('change texture');
+      const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
+      const coinKeyArr = _.keys(bithumbCoinsInfo);
+
+      that.selectedCoin = coinKeyArr[randomNumber];
       that.textureMaterial.dispose();
+
+      // FIXME: 이미지 교체
       that.textureMaterial.map = new ExpoTHREE.TextureLoader().load(
-        require('./bitcoin.png'),
+        require('../img/testBitcoin.png'),
+        texture => {
+          texture.center.set(0.5, 0.5);
+          texture.rotation = THREE.MathUtils.degToRad(90);
+        },
       );
     }
 
-    if (_.floor(that.rotationY, 1) === -0.1) {
-      console.log('stop animation');
+    if (_.floor(that.rotationY, 2) === -0.15) {
       cancelAnimationFrame(that.animationFrame);
+
+      setSquibUrl(require('../img/animation_300_kpo6cdu0.gif../img/squib.gif'));
+
+      setTimeout(() => {
+        setSelectedCoinName(that.selectedCoin);
+        setTitleOpacity(1);
+      }, 280);
+
+      setTimeout(() => {
+        setSquibUrl(require('../img/default.png'));
+      }, 1200);
     }
 
     that.gl.endFrameEXP();
   };
 
   const spinCoin = () => {
-    const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
-    const coinKeyArr = _.keys(bithumbCoinsInfo);
-    const selectedCoin = coinKeyArr[randomNumber];
-
     that.rotationY = -150;
 
-    coinName = selectedCoin;
-    // setSelectedCoinName(selectedCoin);
+    cancelAnimationFrame(that.animationFrame);
     animate();
-
-    console.log('@@ coinName ==>', coinName);
   };
 
   return (
@@ -213,6 +222,7 @@ export default function Home() {
           backgroundColor: 'transparent',
           borderBottomColor: 'transparent',
         }}></Header>
+      <Image style={styles.squibView} source={squibUrl}></Image>
       <GLView
         style={{
           display: 'flex',
@@ -221,9 +231,9 @@ export default function Home() {
         onContextCreate={onContextCreate}
         onTouchStart={spinCoin}
       />
-      <View style={styles.coinTitleView}>
-        <Text>{selectedCoinName}</Text>
-      </View>
+      <Animated.View style={[styles.coinTitleView, {opacity: titleOpacity}]}>
+        <Text style={styles.coinTitle}>{selectedCoinName}</Text>
+      </Animated.View>
     </View>
   );
 }
@@ -238,12 +248,22 @@ const styles = StyleSheet.create({
     top: '28%',
     justifyContent: 'center',
     alignItems: 'center',
-    // opacity: 0,
   },
   coinTitle: {
     // color: 'white',
     paddingHorizontal: 20,
     backgroundColor: '#2980b9',
-    // fontWeight: 'bold',
+    borderWidth: 2,
+    borderColor: 'gold',
+    padding: 3,
+    color: 'gold',
+    fontWeight: 'bold',
+  },
+  squibView: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+    backgroundColor: 'transparent',
   },
 });
