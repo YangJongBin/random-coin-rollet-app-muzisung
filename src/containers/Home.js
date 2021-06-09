@@ -13,6 +13,7 @@ export default function Home() {
   const [selectedCoinName, setSelectedCoinName] = useState();
   const [titleOpacity, setTitleOpacity] = useState(0);
   const [squibUrl, setSquibUrl] = useState(require('../img/default.png'));
+  const [isTexture, setIstexture] = useState(false);
 
   const {resInfo} = useSelector(state => state.bithumb);
 
@@ -156,6 +157,8 @@ export default function Home() {
         that.renderer.render(that.scene, that.camera);
 
         that.gl.endFrameEXP();
+
+        setIstexture(true);
       },
     );
   };
@@ -187,7 +190,7 @@ export default function Home() {
     if (_.floor(that.rotationY, 2) === -0.15) {
       cancelAnimationFrame(that.animationFrame);
 
-      setSquibUrl(require('../img/animation_300_kpo6cdu0.gif../img/squib.gif'));
+      setSquibUrl(require('../img/squib.gif'));
 
       setTimeout(() => {
         setSelectedCoinName(that.selectedCoin);
@@ -203,10 +206,12 @@ export default function Home() {
   };
 
   const spinCoin = () => {
-    that.rotationY = -150;
+    if (isTexture) {
+      that.rotationY = -150;
 
-    cancelAnimationFrame(that.animationFrame);
-    animate();
+      cancelAnimationFrame(that.animationFrame);
+      animate();
+    }
   };
 
   return (
