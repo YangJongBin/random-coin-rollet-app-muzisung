@@ -4,7 +4,9 @@ import {GLView} from 'expo-gl';
 import ExpoTHREE, {THREE} from 'expo-three';
 import {useSelector} from 'react-redux';
 import {Header, Text} from 'react-native-elements';
+import Sound from 'react-native-sound';
 import _ from 'lodash';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 
@@ -15,9 +17,10 @@ export default function Home() {
   const [squibUrl, setSquibUrl] = useState(require('../img/default.png'));
   const [isTexture, setIstexture] = useState(false);
 
-  const {resInfo} = useSelector(state => state.bithumb);
+  const resultSound = new Sound(require('../sound/result.mp3'));
+  const spinSound = new Sound(require('../sound/spin.mp3'));
 
-  let coinName = '';
+  const {resInfo} = useSelector(state => state.bithumb);
 
   this.scene;
   this.cameara;
@@ -189,10 +192,10 @@ export default function Home() {
 
     if (_.floor(that.rotationY, 2) === -0.15) {
       cancelAnimationFrame(that.animationFrame);
-
       setSquibUrl(require('../img/squib.gif'));
 
       setTimeout(() => {
+        resultSound.play();
         setSelectedCoinName(that.selectedCoin);
         setTitleOpacity(1);
       }, 280);
@@ -210,6 +213,8 @@ export default function Home() {
       that.rotationY = -150;
 
       cancelAnimationFrame(that.animationFrame);
+
+      spinSound.play().setCurrentTime(0);
       animate();
     }
   };
@@ -234,11 +239,22 @@ export default function Home() {
           flex: 1,
         }}
         onContextCreate={onContextCreate}
-        onTouchStart={spinCoin}
       />
       <Animated.View style={[styles.coinTitleView, {opacity: titleOpacity}]}>
         <Text style={styles.coinTitle}>{selectedCoinName}</Text>
       </Animated.View>
+      <View
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'transparent',
+        }}>
+        <View onTouchStart={spinCoin} style={styles.touchView}></View>
+      </View>
     </View>
   );
 }
@@ -269,6 +285,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
+    backgroundColor: 'transparent',
+  },
+  touchView: {
+    width: '50%',
+    height: '25%',
     backgroundColor: 'transparent',
   },
 });
