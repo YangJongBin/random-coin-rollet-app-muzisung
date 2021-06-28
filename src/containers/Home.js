@@ -6,7 +6,6 @@ import {useSelector} from 'react-redux';
 import {Header, Text} from 'react-native-elements';
 import Sound from 'react-native-sound';
 import _ from 'lodash';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 
@@ -104,12 +103,19 @@ export default function Home() {
 
     // load texture
     new ExpoTHREE.TextureLoader().load(
-      require('../img/testBitcoin.png'),
+      require('../img/rcrcLogo.png'),
       function (texture) {
         texture.center.set(0.5, 0.5);
         texture.rotation = THREE.MathUtils.degToRad(90);
 
         that.textureMaterial = new THREE.MeshPhongMaterial({
+          color: 0xffee7e,
+          specular: 0x5b5b5b,
+          shininess: 50,
+          transparent: true,
+          map: texture,
+        });
+        const backTextureMaterial = new THREE.MeshPhongMaterial({
           color: 0xffee7e,
           specular: 0x5b5b5b,
           shininess: 50,
@@ -123,12 +129,7 @@ export default function Home() {
         that.coin = new THREE.Mesh(cylinderGeometry, [
           coinMeterial,
           textureMaterial,
-          new THREE.MeshPhongMaterial({
-            color: 0xfcba15,
-            specular: 0x5b5b5b,
-            shininess: 50,
-            transparent: true,
-          }),
+          backTextureMaterial,
         ]);
 
         that.coinBorder = new THREE.Mesh(borderGeometry, coinBorderMeterial);
@@ -173,7 +174,7 @@ export default function Home() {
     that.coinBorder.rotation.y = that.rotationY;
     that.renderer.render(that.scene, that.camera);
 
-    if (_.floor(that.rotationY, 2) === -1.75) {
+    if (_.floor(that.rotationY, 2) === -2.1) {
       const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
       const coinKeyArr = _.keys(bithumbCoinsInfo);
 
@@ -182,7 +183,7 @@ export default function Home() {
 
       // FIXME: 이미지 교체
       that.textureMaterial.map = new ExpoTHREE.TextureLoader().load(
-        require('../img/testBitcoin.png'),
+        require('../img/rcrcLogo.png'),
         texture => {
           texture.center.set(0.5, 0.5);
           texture.rotation = THREE.MathUtils.degToRad(90);
