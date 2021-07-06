@@ -6,8 +6,8 @@ import {useSelector} from 'react-redux';
 import {Header, Text} from 'react-native-elements';
 import Sound from 'react-native-sound';
 import _ from 'lodash';
+import LottieView from 'lottie-react-native';
 
-// const coinUrlInfo = require('./coinUrlInfo');
 import coinUrlInfo from './coinUrlInfo';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
@@ -16,7 +16,6 @@ export default function Home() {
   const [bithumbCoinsInfo, setBitHumbCoinsInfo] = useState({});
   const [selectedCoinName, setSelectedCoinName] = useState();
   const [titleOpacity, setTitleOpacity] = useState(0);
-  const [squibUrl, setSquibUrl] = useState(require('../img/default.png'));
   const [isTexture, setIstexture] = useState(false);
 
   const resultSound = new Sound(require('../sound/result.mp3'));
@@ -185,7 +184,7 @@ export default function Home() {
       that.selectedCoin = coinKeyArr[randomNumber];
       that.textureMaterial.dispose();
 
-      let path = coinUrlInfo[that.selectedCoin]; // FIXME:;
+      let path = coinUrlInfo[that.selectedCoin];
 
       if (!path) {
         path = require('../img/RCRC.png');
@@ -202,18 +201,13 @@ export default function Home() {
 
     if (_.floor(that.rotationY, 2) === -0.15) {
       cancelAnimationFrame(that.animationFrame);
-      setSquibUrl(require('../img/squib.gif'));
+      this.animation.play();
 
       setTimeout(() => {
         resultSound.play();
         setSelectedCoinName(that.selectedCoin);
         setTitleOpacity(1);
       }, 280);
-
-      setTimeout(() => {
-        // FIXME: 끊김 현상 발생
-        // setSquibUrl(require('../img/default.png'));
-      }, 1200);
     }
 
     that.gl.endFrameEXP();
@@ -243,7 +237,6 @@ export default function Home() {
           backgroundColor: 'transparent',
           borderBottomColor: 'transparent',
         }}></Header>
-      <Image style={styles.squibView} source={squibUrl}></Image>
       <GLView
         style={{
           display: 'flex',
@@ -254,6 +247,17 @@ export default function Home() {
       <Animated.View style={[styles.coinTitleView, {opacity: titleOpacity}]}>
         <Text style={styles.coinTitle}>{selectedCoinName}</Text>
       </Animated.View>
+      <LottieView
+        ref={animation => {
+          this.animation = animation;
+        }}
+        progress={1}
+        style={{
+          position: 'absolute',
+        }}
+        source={require('../lottie/squib.json')}
+        loop={false}
+      />
       <View
         style={{
           position: 'absolute',
