@@ -202,12 +202,9 @@ export default function Home() {
     if (_.floor(that.rotationY, 2) === -0.15) {
       cancelAnimationFrame(that.animationFrame);
       this.animation.play();
-
-      setTimeout(() => {
-        resultSound.play();
-        setSelectedCoinName(that.selectedCoin);
-        setTitleOpacity(1);
-      }, 280);
+      resultSound.play();
+      setSelectedCoinName(that.selectedCoin);
+      setTitleOpacity(1);
     }
 
     that.gl.endFrameEXP();
