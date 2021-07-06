@@ -7,6 +7,9 @@ import {Header, Text} from 'react-native-elements';
 import Sound from 'react-native-sound';
 import _ from 'lodash';
 
+// const coinUrlInfo = require('./coinUrlInfo');
+import coinUrlInfo from './coinUrlInfo';
+
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 
 export default function Home() {
@@ -103,7 +106,7 @@ export default function Home() {
 
     // load texture
     new ExpoTHREE.TextureLoader().load(
-      require('../img/rcrcLogo.png'),
+      require('../img/RCRC.png'),
       function (texture) {
         texture.center.set(0.5, 0.5);
         texture.rotation = THREE.MathUtils.degToRad(90);
@@ -174,16 +177,22 @@ export default function Home() {
     that.coinBorder.rotation.y = that.rotationY;
     that.renderer.render(that.scene, that.camera);
 
-    if (_.floor(that.rotationY, 2) === -2.1) {
+    // console.log(_.floor(that.rotationY, 2));
+    if (_.floor(that.rotationY, 2) === -2.3) {
       const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
       const coinKeyArr = _.keys(bithumbCoinsInfo);
 
       that.selectedCoin = coinKeyArr[randomNumber];
       that.textureMaterial.dispose();
 
-      // FIXME: 이미지 교체
+      let path = coinUrlInfo[that.selectedCoin]; // FIXME:;
+
+      if (!path) {
+        path = require('../img/RCRC.png');
+      }
+
       that.textureMaterial.map = new ExpoTHREE.TextureLoader().load(
-        require('../img/rcrcLogo.png'),
+        path,
         texture => {
           texture.center.set(0.5, 0.5);
           texture.rotation = THREE.MathUtils.degToRad(90);
@@ -202,7 +211,8 @@ export default function Home() {
       }, 280);
 
       setTimeout(() => {
-        setSquibUrl(require('../img/default.png'));
+        // FIXME: 끊김 현상 발생
+        // setSquibUrl(require('../img/default.png'));
       }, 1200);
     }
 
