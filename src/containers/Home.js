@@ -29,19 +29,19 @@ export default function Home() {
   this.coin;
   this.coinBorder;
   this.gl;
-
   this.animationFrame;
   this.rotationY = 0;
-
   this.textureMaterial;
 
   const that = this;
 
+  // 빗썸 코인 정보 세팅
   useEffect(() => {
     THREE.suppressExpoWarnings();
     setBitHumbCoinsInfo(resInfo.data);
   }, []);
 
+  // three js context 세팅
   const onContextCreate = gl => {
     const {
       scale: pixelRatio,
@@ -51,10 +51,7 @@ export default function Home() {
 
     that.gl = gl;
     that.gl.canvas = {width, height};
-
     that.scene = new THREE.Scene();
-
-    // create camera
     that.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     that.camera.position.set(0, 2, 20);
     that.camera.lookAt(this.scene.position);
@@ -176,20 +173,24 @@ export default function Home() {
     that.coinBorder.rotation.y = that.rotationY;
     that.renderer.render(that.scene, that.camera);
 
+    const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
+    const coinKeyArr = _.keys(bithumbCoinsInfo);
+
+    that.selectedCoin = coinKeyArr[randomNumber]; // 랜덤 선택된 코인 이름
+
+    let path = coinUrlInfo[that.selectedCoin]; // 랜덤 선택된 이미지 경로
+
     // console.log(_.floor(that.rotationY, 2));
     if (_.floor(that.rotationY, 2) === -2.3) {
-      const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
-      const coinKeyArr = _.keys(bithumbCoinsInfo);
-
-      that.selectedCoin = coinKeyArr[randomNumber];
+      // 텍스쳐 교체를 위한 기존 텍스쳐 삭제
       that.textureMaterial.dispose();
 
-      let path = coinUrlInfo[that.selectedCoin];
-
-      if (!path) {
+      // 이미지 없을 경우 기본 로고 교체
+      if (_.isUndefined(path)) {
         path = require('../img/RCRC.png');
       }
 
+      // 이미지 load
       that.textureMaterial.map = new ExpoTHREE.TextureLoader().load(
         path,
         texture => {
@@ -199,6 +200,7 @@ export default function Home() {
       );
     }
 
+    // lottie animation start
     if (_.floor(that.rotationY, 2) === -0.15) {
       cancelAnimationFrame(that.animationFrame);
       this.animation.play();
@@ -210,12 +212,11 @@ export default function Home() {
     that.gl.endFrameEXP();
   };
 
+  // spin touch event
   const spinCoin = () => {
     if (isTexture) {
       that.rotationY = -150;
-
       cancelAnimationFrame(that.animationFrame);
-
       spinSound.play().setCurrentTime(0);
       animate();
     }
