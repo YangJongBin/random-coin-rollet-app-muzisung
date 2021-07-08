@@ -173,15 +173,13 @@ export default function Home() {
     that.coinBorder.rotation.y = that.rotationY;
     that.renderer.render(that.scene, that.camera);
 
-    const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
-    const coinKeyArr = _.keys(bithumbCoinsInfo);
-
-    that.selectedCoin = coinKeyArr[randomNumber]; // 랜덤 선택된 코인 이름
-
-    let path = coinUrlInfo[that.selectedCoin]; // 랜덤 선택된 이미지 경로
-
-    // console.log(_.floor(that.rotationY, 2));
     if (_.floor(that.rotationY, 2) === -2.3) {
+      const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
+      const coinKeyArr = _.keys(bithumbCoinsInfo);
+
+      that.selectedCoin = coinKeyArr[randomNumber]; // 랜덤 선택된 코인 이름
+      let path = coinUrlInfo[that.selectedCoin]; // 랜덤 선택된 이미지 경로
+
       // 텍스쳐 교체를 위한 기존 텍스쳐 삭제
       that.textureMaterial.dispose();
 
