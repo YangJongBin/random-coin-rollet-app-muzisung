@@ -101,110 +101,112 @@ export default function Home() {
     });
 
     // load texture
-    new ExpoTHREE.TextureLoader().load(
-      require('../img/RCRC.png'),
-      function (texture) {
-        texture.center.set(0.5, 0.5);
-        texture.rotation = THREE.MathUtils.degToRad(90);
+    new ExpoTHREE.TextureLoader().load(require('../img/RCRC.png'), texture => {
+      texture.center.set(0.5, 0.5);
+      texture.rotation = THREE.MathUtils.degToRad(90);
 
-        that.textureMaterial = new THREE.MeshPhongMaterial({
-          color: 0xffee7e,
-          specular: 0x5b5b5b,
-          shininess: 50,
-          transparent: true,
-          map: texture,
-        });
-        const backTextureMaterial = new THREE.MeshPhongMaterial({
-          color: 0xffee7e,
-          specular: 0x5b5b5b,
-          shininess: 50,
-          transparent: true,
-          map: texture,
-        });
+      that.textureMaterial = new THREE.MeshPhongMaterial({
+        color: 0xffee7e,
+        specular: 0x5b5b5b,
+        shininess: 50,
+        transparent: true,
+        map: texture,
+      });
+      const backTextureMaterial = new THREE.MeshPhongMaterial({
+        color: 0xffee7e,
+        specular: 0x5b5b5b,
+        shininess: 50,
+        transparent: true,
+        map: texture,
+      });
 
-        textureMaterial.needsUpdate = true;
-        textureMaterial.map.needsUpdate = true;
+      that.textureMaterial.needsUpdate = true;
+      that.textureMaterial.map.needsUpdate = true;
 
-        that.coin = new THREE.Mesh(cylinderGeometry, [
-          coinMeterial,
-          textureMaterial,
-          backTextureMaterial,
-        ]);
+      that.coin = new THREE.Mesh(cylinderGeometry, [
+        coinMeterial,
+        that.textureMaterial,
+        backTextureMaterial,
+      ]);
 
-        that.coinBorder = new THREE.Mesh(borderGeometry, coinBorderMeterial);
-        that.coin.position.set(0, 1.5, 0);
-        that.coinBorder.position.set(0, 1.5, 0);
+      that.coinBorder = new THREE.Mesh(borderGeometry, coinBorderMeterial);
+      that.coin.position.set(0, 1.5, 0);
+      that.coinBorder.position.set(0, 1.5, 0);
 
-        that.scene.add(that.coin);
-        that.scene.add(that.coinBorder);
+      that.scene.add(that.coin);
+      that.scene.add(that.coinBorder);
 
-        // create light
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-        const leftPointLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        const rightPointLight = new THREE.DirectionalLight(0xffffff, 0.1);
-        const skyLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      // create light
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+      const leftPointLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      const rightPointLight = new THREE.DirectionalLight(0xffffff, 0.1);
+      const skyLight = new THREE.DirectionalLight(0xffffff, 0.5);
 
-        leftPointLight.position.set(-30, 0, 0);
-        rightPointLight.position.set(30, 0, 0);
-        skyLight.position.set(0, 30, 0);
+      leftPointLight.position.set(-30, 0, 0);
+      rightPointLight.position.set(30, 0, 0);
+      skyLight.position.set(0, 30, 0);
 
-        that.scene.add(skyLight);
-        that.scene.add(leftPointLight);
-        that.scene.add(rightPointLight);
-        that.scene.add(ambientLight);
+      that.scene.add(skyLight);
+      that.scene.add(leftPointLight);
+      that.scene.add(rightPointLight);
+      that.scene.add(ambientLight);
 
-        // create renderer
-        that.renderer = new ExpoTHREE.Renderer({gl, pixelRatio, width, height});
+      // create renderer
+      that.renderer = new ExpoTHREE.Renderer({gl, pixelRatio, width, height});
 
-        that.renderer.setSize(width, height);
-        that.renderer.render(that.scene, that.camera);
+      that.renderer.setSize(width, height);
+      that.renderer.render(that.scene, that.camera);
 
-        that.gl.endFrameEXP();
+      that.gl.endFrameEXP();
 
-        setIstexture(true);
-      },
-    );
+      setIstexture(true);
+    });
   };
 
   const animate = () => {
     that.animationFrame = requestAnimationFrame(animate);
-    that.rotationY = THREE.MathUtils.lerp(that.rotationY, 0, 0.01);
-    that.coin.rotation.y = that.rotationY;
-    that.coinBorder.rotation.y = that.rotationY;
-    that.renderer.render(that.scene, that.camera);
 
-    if (_.floor(that.rotationY, 2) === -2.3) {
-      const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
-      const coinKeyArr = _.keys(bithumbCoinsInfo);
+    if (!that.changeTexture) {
+      that.coin.rotation.y += that.rotationY;
+      that.coinBorder.rotation.y += that.rotationY;
+      that.renderer.render(that.scene, that.camera);
 
-      that.selectedCoin = coinKeyArr[randomNumber]; // 랜덤 선택된 코인 이름
-      let path = coinUrlInfo[that.selectedCoin]; // 랜덤 선택된 이미지 경로
+      console.log('@@ selectcedCoin ==>', that.selectedCoin);
 
-      // 텍스쳐 교체를 위한 기존 텍스쳐 삭제
-      that.textureMaterial.dispose();
-
-      // 이미지 없을 경우 기본 로고 교체
-      if (_.isUndefined(path)) {
-        path = require('../img/RCRC.png');
-      }
-
-      // 이미지 load
-      that.textureMaterial.map = new ExpoTHREE.TextureLoader().load(
-        path,
+      new ExpoTHREE.TextureLoader().load(
+        coinUrlInfo[that.selectedCoin]
+          ? coinUrlInfo[that.selectedCoin]
+          : require('../img/RCRC.png'),
         texture => {
-          texture.center.set(0.5, 0.5);
-          texture.rotation = THREE.MathUtils.degToRad(90);
+          that.changeTexture = texture;
         },
       );
-    }
+    } else {
+      // console.log('@@ second', that.rotationY);
+      that.rotationY = THREE.MathUtils.lerp(that.rotationY, 0, 0.01);
+      that.coin.rotation.y = that.rotationY;
+      that.coinBorder.rotation.y = that.rotationY;
+      that.renderer.render(that.scene, that.camera);
 
-    // lottie animation start
-    if (_.floor(that.rotationY, 2) === -0.15) {
-      cancelAnimationFrame(that.animationFrame);
-      this.animation.play();
-      resultSound.play();
-      setSelectedCoinName(that.selectedCoin);
-      setTitleOpacity(1);
+      if (_.floor(that.rotationY, 2) === -2.3) {
+        // that.textureMaterial.dispose(); // 텍스쳐 교체를 위한 기존 텍스쳐 삭제
+        console.log('SET LOGO IMAGE!');
+
+        // 이미지 load
+        that.changeTexture.center.set(0.5, 0.5);
+        that.changeTexture.rotation = THREE.MathUtils.degToRad(90);
+
+        that.textureMaterial.map = that.changeTexture;
+      }
+
+      // lottie animation start
+      if (_.floor(that.rotationY, 2) === -0.15) {
+        cancelAnimationFrame(that.animationFrame);
+        this.animation.play();
+        resultSound.play();
+        setSelectedCoinName(that.selectedCoin);
+        setTitleOpacity(1);
+      }
     }
 
     that.gl.endFrameEXP();
@@ -213,7 +215,12 @@ export default function Home() {
   // spin touch event
   const spinCoin = () => {
     if (isTexture) {
-      that.rotationY = -150;
+      const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
+      const coinKeyArr = _.keys(bithumbCoinsInfo);
+
+      that.selectedCoin = coinKeyArr[randomNumber]; // 랜덤 선택된 코인 이름
+      that.rotationY = -180;
+      that.changeTexture = null;
       cancelAnimationFrame(that.animationFrame);
       spinSound.play().setCurrentTime(0);
       animate();
