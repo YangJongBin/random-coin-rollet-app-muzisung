@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 
   loading: {
     width: '10%',
-    marginLeft: 7,
+    marginLeft: 5,
     marginBottom: 7,
     justifyContent: 'center',
     alignItems: 'center',
