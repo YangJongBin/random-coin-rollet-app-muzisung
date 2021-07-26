@@ -293,13 +293,15 @@ export default function Home() {
         }}>
         <View onTouchStart={spinCoin} style={styles.touchView}></View>
       </View>
-      <BannerAd
-        unitId={TestIds.BANNER}
-        size={BannerAdSize.FULL_BANNER}
-        requestOptions={{
-          requestNonPersonalizedAdsOnly: true,
-        }}
-      />
+      <View style={styles.bannerView}>
+        <BannerAd
+          unitId={TestIds.BANNER}
+          size={BannerAdSize.BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
     </SafeAreaProvider>
   );
 }
@@ -336,5 +338,14 @@ const styles = StyleSheet.create({
     width: '50%',
     height: '25%',
     backgroundColor: 'transparent',
+  },
+
+  bannerView: {
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: '10%',
+    borderWidth: 3,
+    borderRadius: 5,
+    borderColor: '#2980b9',
   },
 });
