@@ -15,8 +15,12 @@ target 'rancoranco' do
   )
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'RNFBAdMob', :path => '../node_modules/@react-native-firebase/admob'
 
+  pod 'Google-Mobile-Ads-SDK'
+  pod 'Firebase/Core'
   pod 'Firebase/Analytics'
+  pod 'Firebase/AdMob'
 
   target 'rancorancoTests' do
     inherit! :complete

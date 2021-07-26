@@ -19,6 +19,8 @@
 #import <Firebase.h>
 #import <React/RCTRootView.h>
 
+
+
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
   SKDescriptorMapper *layoutDescriptorMapper = [[SKDescriptorMapper alloc] initWithDefaults];
@@ -36,6 +38,9 @@ static void InitializeFlipper(UIApplication *application) {
  
 @end
 
+@import Firebase;
+@import GoogleMobileAds;
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -43,6 +48,8 @@ static void InitializeFlipper(UIApplication *application) {
   if([FIRApp defaultApp] == nil){
     [FIRApp configure];
   }
+
+   [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif

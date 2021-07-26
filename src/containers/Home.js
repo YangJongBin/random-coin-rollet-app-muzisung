@@ -7,6 +7,15 @@ import {Header, Text} from 'react-native-elements';
 import Sound from 'react-native-sound';
 import _ from 'lodash';
 import LottieView from 'lottie-react-native';
+import admob, {
+  BannerAd,
+  TestIds,
+  BannerAdSize,
+  MaxAdContentRating,
+  firebase,
+} from '@react-native-firebase/admob';
+
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import coinUrlInfo from './coinUrlInfo';
 
@@ -37,6 +46,16 @@ export default function Home() {
 
   // 빗썸 코인 정보 세팅
   useEffect(() => {
+    // admob()
+    //   .setRequestConfiguration({
+    //     maxAdContentRating: MaxAdContentRating.PG,
+    //     tagForChildDirectedTreatment: true,
+    //     tagForUnderAgeOfConsent: true,
+    //   })
+    //   .then(() => {
+    //     // Request config successfully set!
+    //   });
+
     THREE.suppressExpoWarnings();
     setBitHumbCoinsInfo(resInfo.data);
   }, []);
@@ -229,7 +248,7 @@ export default function Home() {
   };
 
   return (
-    <View
+    <SafeAreaProvider
       style={{
         width: screenWidth,
         height: screenHeight,
@@ -274,7 +293,14 @@ export default function Home() {
         }}>
         <View onTouchStart={spinCoin} style={styles.touchView}></View>
       </View>
-    </View>
+      <BannerAd
+        unitId={TestIds.BANNER}
+        size={BannerAdSize.FULL_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      />
+    </SafeAreaProvider>
   );
 }
 
