@@ -33,7 +33,7 @@ export default function Splash() {
   return (
     <View style={styles.content}>
       <LottieView
-        source={require('../lottie/loading2.json')}
+        source={require('../lottie/loading3.json')}
         loop
         style={styles.loading}
         autoPlay></LottieView>
@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
   },
 
   loading: {
-    width: '10%',
-    marginLeft: 5,
-    marginBottom: 7,
+    width: '30%',
+    // marginLeft: 5,
+    // marginBottom: 7,
     justifyContent: 'center',
     alignItems: 'center',
   },

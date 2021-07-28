@@ -26,6 +26,7 @@ export default function Home() {
   const [selectedCoinName, setSelectedCoinName] = useState();
   const [titleOpacity, setTitleOpacity] = useState(0);
   const [isTexture, setIstexture] = useState(false);
+  const [loadingOpacity, setLoadingOpacity] = useState(1);
 
   const resultSound = new Sound(require('../sound/result.mp3'));
   const spinSound = new Sound(require('../sound/spin.mp3'));
@@ -46,15 +47,16 @@ export default function Home() {
 
   // 빗썸 코인 정보 세팅
   useEffect(() => {
-    // admob()
-    //   .setRequestConfiguration({
-    //     maxAdContentRating: MaxAdContentRating.PG,
-    //     tagForChildDirectedTreatment: true,
-    //     tagForUnderAgeOfConsent: true,
-    //   })
-    //   .then(() => {
-    //     // Request config successfully set!
-    //   });
+    admob()
+      .setRequestConfiguration({
+        maxAdContentRating: MaxAdContentRating.G,
+        tagForChildDirectedTreatment: false,
+        tagForUnderAgeOfConsent: false,
+      })
+      .then(res => {
+        // Request config successfully set!
+        console.log('@@ admob ==>', res);
+      });
 
     THREE.suppressExpoWarnings();
     setBitHumbCoinsInfo(resInfo.data);
@@ -179,6 +181,7 @@ export default function Home() {
       that.gl.endFrameEXP();
 
       setIstexture(true);
+      setLoadingOpacity(0);
     });
   };
 
@@ -247,6 +250,9 @@ export default function Home() {
     }
   };
 
+  // const adUnitId = 'ca-app-pub-8566072639292145/6439613511';
+  const adUnitId = TestIds.BANNER;
+
   return (
     <SafeAreaProvider
       style={{
@@ -260,6 +266,13 @@ export default function Home() {
           backgroundColor: 'transparent',
           borderBottomColor: 'transparent',
         }}></Header>
+      <View style={styles.loadingView}>
+        <LottieView
+          source={require('../lottie/loading3.json')}
+          style={[styles.loading, {opacity: loadingOpacity}]}
+          loop
+          autoPlay></LottieView>
+      </View>
       <GLView
         style={{
           display: 'flex',
@@ -295,7 +308,7 @@ export default function Home() {
       </View>
       <View style={styles.bannerView}>
         <BannerAd
-          unitId={TestIds.BANNER}
+          unitId={adUnitId}
           size={BannerAdSize.BANNER}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
@@ -339,7 +352,6 @@ const styles = StyleSheet.create({
     height: '25%',
     backgroundColor: 'transparent',
   },
-
   bannerView: {
     position: 'absolute',
     alignSelf: 'center',
@@ -347,5 +359,17 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderRadius: 5,
     borderColor: '#2980b9',
+  },
+  loadingView: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loading: {
+    width: '30%',
+    // marginLeft: 5,
+    // marginBottom: 7,
   },
 });
