@@ -262,7 +262,7 @@ export default function Home() {
       style={{
         width: screenWidth,
         height: screenHeight,
-        backgroundColor: '#74b9ff',
+        backgroundColor: '#5fbaff',
       }}>
       <Header
         barStyle="default"
@@ -366,11 +366,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     bottom: '10%',
-    borderWidth: 3,
-    borderRadius: 5,
-    borderColor: '#2980b9',
-  },
-  banner: {
     borderWidth: 3,
     borderRadius: 5,
     borderColor: '#2980b9',

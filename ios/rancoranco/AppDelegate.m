@@ -18,6 +18,7 @@
 
 #import <Firebase.h>
 #import <React/RCTRootView.h>
+#import "RNSplashScreen.h"
 
 
 
@@ -73,6 +74,7 @@ static void InitializeFlipper(UIApplication *application) {
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   [super application:application didFinishLaunchingWithOptions:launchOptions];
+  [RNSplashScreen show];
   return YES;
 }
 
