@@ -27,6 +27,7 @@ export default function Home() {
   const [titleOpacity, setTitleOpacity] = useState(0);
   const [isTexture, setIstexture] = useState(false);
   const [loadingOpacity, setLoadingOpacity] = useState(1);
+  const [adOpacity, setAdOpacity] = useState(0);
 
   const resultSound = new Sound(require('../sound/result.mp3'));
   const spinSound = new Sound(require('../sound/spin.mp3'));
@@ -207,7 +208,6 @@ export default function Home() {
         // 이미지 load
         that.changeTexture.center.set(0.5, 0.5);
         that.changeTexture.rotation = THREE.MathUtils.degToRad(90);
-
         that.textureMaterial.map = that.changeTexture;
       }
 
@@ -233,16 +233,18 @@ export default function Home() {
       const coinKeyArr = _.keys(bithumbCoinsInfo);
 
       that.changeTexture = null;
+
       that.selectedCoin = coinKeyArr[randomNumber]; // 랜덤 선택된 코인 이름
       that.path = coinUrlInfo[that.selectedCoin]
         ? coinUrlInfo[that.selectedCoin]
         : require('../img/RCRC.png');
 
       console.log('@@ Selected Coin ==>', that.selectedCoin);
-
-      new ExpoTHREE.TextureLoader().load(that.path, texture => {
-        that.changeTexture = texture;
-      });
+      setTimeout(() => {
+        new ExpoTHREE.TextureLoader().load(that.path, texture => {
+          that.changeTexture = texture;
+        });
+      }, 3000);
 
       that.rotationY = -180;
       spinSound.play().setCurrentTime(0);
@@ -250,8 +252,8 @@ export default function Home() {
     }
   };
 
-  // const adUnitId = 'ca-app-pub-8566072639292145/6439613511';
-  const adUnitId = TestIds.BANNER;
+  const adUnitId = 'ca-app-pub-8566072639292145/6439613511';
+  // const adUnitId = TestIds.BANNER;
 
   return (
     <SafeAreaProvider
@@ -306,10 +308,18 @@ export default function Home() {
         }}>
         <View onTouchStart={spinCoin} style={styles.touchView}></View>
       </View>
-      <View style={styles.bannerView}>
+      <View style={[styles.bannerView, {opacity: adOpacity}]}>
         <BannerAd
           unitId={adUnitId}
           size={BannerAdSize.BANNER}
+          onAdLoaded={e => {
+            console.log('@@ isAd ==>', e);
+            setAdOpacity(1);
+          }}
+          onAdFailedToLoad={e => {
+            console.log('@@ Fail Ad ==>', e);
+            setAdOpacity(0);
+          }}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
