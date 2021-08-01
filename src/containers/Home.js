@@ -27,7 +27,6 @@ export default function Home() {
   const [titleOpacity, setTitleOpacity] = useState(0);
   const [isTexture, setIstexture] = useState(false);
   const [loadingOpacity, setLoadingOpacity] = useState(1);
-  const [adOpacity, setAdOpacity] = useState(0);
 
   const resultSound = new Sound(require('../sound/result.mp3'));
   const spinSound = new Sound(require('../sound/spin.mp3'));
@@ -229,22 +228,25 @@ export default function Home() {
     cancelAnimationFrame(that.animationFrame);
 
     if (isTexture) {
+      that.changeTexture = null;
+
       const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
       const coinKeyArr = _.keys(bithumbCoinsInfo);
 
-      that.changeTexture = null;
-
-      that.selectedCoin = coinKeyArr[randomNumber]; // 랜덤 선택된 코인 이름
-      that.path = coinUrlInfo[that.selectedCoin]
-        ? coinUrlInfo[that.selectedCoin]
+      that.path = coinUrlInfo[coinKeyArr[randomNumber]]
+        ? coinUrlInfo[coinKeyArr[randomNumber]]
         : require('../img/RCRC.png');
 
-      console.log('@@ Selected Coin ==>', that.selectedCoin);
-      setTimeout(() => {
-        new ExpoTHREE.TextureLoader().load(that.path, texture => {
+      const coinParam = coinKeyArr[randomNumber];
+
+      new ExpoTHREE.TextureLoader().load(that.path, texture => {
+        if (_.isNull(that.changeTexture)) {
+          that.selectedCoin = coinParam;
           that.changeTexture = texture;
-        });
-      }, 3000);
+
+          console.log('@@ coin ==>', that.selectedCoin);
+        }
+      });
 
       that.rotationY = -180;
       spinSound.play().setCurrentTime(0);
@@ -252,8 +254,8 @@ export default function Home() {
     }
   };
 
-  const adUnitId = 'ca-app-pub-8566072639292145/6439613511';
-  // const adUnitId = TestIds.BANNER;
+  // const adUnitId = 'ca-app-pub-8566072639292145/6439613511';
+  const adUnitId = TestIds.BANNER;
 
   return (
     <SafeAreaProvider
@@ -308,17 +310,15 @@ export default function Home() {
         }}>
         <View onTouchStart={spinCoin} style={styles.touchView}></View>
       </View>
-      <View style={[styles.bannerView, {opacity: adOpacity}]}>
+      <View style={[styles.bannerView]}>
         <BannerAd
           unitId={adUnitId}
           size={BannerAdSize.BANNER}
           onAdLoaded={e => {
             console.log('@@ isAd ==>', e);
-            setAdOpacity(1);
           }}
           onAdFailedToLoad={e => {
             console.log('@@ Fail Ad ==>', e);
-            setAdOpacity(0);
           }}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
@@ -366,6 +366,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     bottom: '10%',
+    borderWidth: 3,
+    borderRadius: 5,
+    borderColor: '#2980b9',
+  },
+  banner: {
     borderWidth: 3,
     borderRadius: 5,
     borderColor: '#2980b9',
