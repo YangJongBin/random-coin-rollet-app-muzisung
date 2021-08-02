@@ -33,7 +33,7 @@ export default function Splash() {
   return (
     <View style={styles.content}>
       <LottieView
-        source={require('../lottie/loading3.json')}
+        source={require('../lottie/loading.json')}
         loop
         style={styles.loading}
         autoPlay></LottieView>

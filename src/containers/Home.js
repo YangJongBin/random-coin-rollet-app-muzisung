@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {View, Dimensions, StyleSheet, Animated, Image} from 'react-native';
+import {View, Dimensions, StyleSheet, Animated} from 'react-native';
 import {GLView} from 'expo-gl';
 import ExpoTHREE, {THREE} from 'expo-three';
 import {useSelector} from 'react-redux';
@@ -27,6 +27,7 @@ export default function Home() {
   const [titleOpacity, setTitleOpacity] = useState(0);
   const [isTexture, setIstexture] = useState(false);
   const [loadingOpacity, setLoadingOpacity] = useState(1);
+  const [twinkleOpacity, setTwinkleOpacity] = useState(0);
 
   const resultSound = new Sound(require('../sound/result.mp3'));
   const spinSound = new Sound(require('../sound/spin.mp3'));
@@ -182,6 +183,7 @@ export default function Home() {
 
       setIstexture(true);
       setLoadingOpacity(0);
+      setTwinkleOpacity(1);
     });
   };
 
@@ -266,13 +268,16 @@ export default function Home() {
       }}>
       <Header
         barStyle="default"
+        // centerComponent={
+        //   <Text style={{color: '#ffee7e', fontWeight: 'bold'}}>MUZISUNG</Text>
+        // }
         containerStyle={{
           backgroundColor: 'transparent',
           borderBottomColor: 'transparent',
         }}></Header>
       <View style={styles.loadingView}>
         <LottieView
-          source={require('../lottie/loading3.json')}
+          source={require('../lottie/loading.json')}
           style={[styles.loading, {opacity: loadingOpacity}]}
           loop
           autoPlay></LottieView>
@@ -297,6 +302,15 @@ export default function Home() {
         }}
         source={require('../lottie/squib.json')}
         loop={false}
+      />
+      <LottieView
+        ref={twinkleLottie => {
+          this.twinkleLottie = twinkleLottie;
+        }}
+        style={{position: 'absolute', opacity: twinkleOpacity}}
+        source={require('../lottie/twinkle.json')}
+        autoPlay
+        loop={true}
       />
       <View
         style={{
