@@ -275,13 +275,7 @@ export default function Home() {
           backgroundColor: 'transparent',
           borderBottomColor: 'transparent',
         }}></Header>
-      <View style={styles.loadingView}>
-        <LottieView
-          source={require('../lottie/loading.json')}
-          style={[styles.loading, {opacity: loadingOpacity}]}
-          loop
-          autoPlay></LottieView>
-      </View>
+      <View style={styles.loadingView}></View>
       <GLView
         style={{
           display: 'flex',
@@ -380,6 +374,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     bottom: '10%',
+    backgroundColor: 'white',
     borderWidth: 3,
     borderRadius: 5,
     borderColor: '#2980b9',
