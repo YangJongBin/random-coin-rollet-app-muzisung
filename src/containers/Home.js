@@ -256,8 +256,8 @@ export default function Home() {
     }
   };
 
-  // const adUnitId = 'ca-app-pub-8566072639292145/6439613511';
-  const adUnitId = TestIds.BANNER;
+  const adUnitId = 'ca-app-pub-8566072639292145/6439613511';
+  // const adUnitId = TestIds.BANNER;
 
   return (
     <SafeAreaProvider
