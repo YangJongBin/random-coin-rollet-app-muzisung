@@ -216,7 +216,11 @@ export default function Home() {
         this.animation.play();
         resultSound.play();
 
-        if (that.selectedCoin === 'undefined' || that.selectedCoin === 'date') {
+        if (
+          that.selectedCoin === 'undefined' ||
+          that.selectedCoin === 'date' ||
+          !that.selectedCoin
+        ) {
           that.selectedCoin = 'RETRY';
         }
         setSelectedCoinName(that.selectedCoin);
