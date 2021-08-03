@@ -56,7 +56,6 @@ export default function Home() {
       })
       .then(res => {
         // Request config successfully set!
-        console.log('@@ admob ==>', res);
       });
 
     THREE.suppressExpoWarnings();
@@ -204,7 +203,6 @@ export default function Home() {
 
       if (_.floor(that.rotationY, 2) === -2.3) {
         that.textureMaterial.dispose(); // 텍스쳐 교체를 위한 기존 텍스쳐 삭제
-        console.log('SET LOGO IMAGE!');
 
         // 이미지 load
         that.changeTexture.center.set(0.5, 0.5);
@@ -217,6 +215,10 @@ export default function Home() {
         cancelAnimationFrame(that.animationFrame);
         this.animation.play();
         resultSound.play();
+
+        if (that.selectedCoin === 'undefined' || that.selectedCoin === 'date') {
+          that.selectedCoin = 'RETRY';
+        }
         setSelectedCoinName(that.selectedCoin);
         setTitleOpacity(1);
       }
@@ -244,9 +246,9 @@ export default function Home() {
       new ExpoTHREE.TextureLoader().load(that.path, texture => {
         if (_.isNull(that.changeTexture)) {
           that.selectedCoin = coinParam;
-          that.changeTexture = texture;
 
-          console.log('@@ coin ==>', that.selectedCoin);
+          console.log(that.selectedCoin);
+          that.changeTexture = texture;
         }
       });
 
@@ -322,12 +324,8 @@ export default function Home() {
         <BannerAd
           unitId={adUnitId}
           size={BannerAdSize.BANNER}
-          onAdLoaded={e => {
-            console.log('@@ isAd ==>', e);
-          }}
-          onAdFailedToLoad={e => {
-            console.log('@@ Fail Ad ==>', e);
-          }}
+          onAdLoaded={e => {}}
+          onAdFailedToLoad={e => {}}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
