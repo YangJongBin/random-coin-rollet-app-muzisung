@@ -7,6 +7,7 @@
 #import <UMCore/UMModuleRegistry.h>
 #import <UMReactNativeAdapter/UMNativeModulesProxy.h>
 #import <UMReactNativeAdapter/UMModuleRegistryAdapter.h>
+#import "RNSplashScreen.h"
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -18,7 +19,7 @@
 
 #import <Firebase.h>
 #import <React/RCTRootView.h>
-#import "RNSplashScreen.h"
+
 
 
 
