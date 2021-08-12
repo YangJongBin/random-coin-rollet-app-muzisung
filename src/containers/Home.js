@@ -328,8 +328,12 @@ export default function Home() {
         <BannerAd
           unitId={adUnitId}
           size={BannerAdSize.BANNER}
-          onAdLoaded={e => {}}
-          onAdFailedToLoad={e => {}}
+          onAdLoaded={e => {
+            console.log('Advert loaded');
+          }}
+          onAdFailedToLoad={e => {
+            console.log('Fail ad');
+          }}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
@@ -376,10 +380,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     bottom: '10%',
-    backgroundColor: 'white',
-    borderWidth: 3,
-    borderRadius: 5,
-    borderColor: '#2980b9',
+    shadowOpacity: 0.7,
+    shadowOffset: {width: 0, height: 1},
+    // backgroundColor: 'white',
+    // borderWidth: 3,
+    // borderRadius: 5,
+    // borderColor: '#2980b9',
   },
   loadingView: {
     position: 'absolute',

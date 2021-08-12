@@ -20,9 +20,6 @@
 #import <Firebase.h>
 #import <React/RCTRootView.h>
 
-
-
-
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
   SKDescriptorMapper *layoutDescriptorMapper = [[SKDescriptorMapper alloc] initWithDefaults];
