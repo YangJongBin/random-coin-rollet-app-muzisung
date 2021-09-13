@@ -3,7 +3,7 @@ import {View, Dimensions, StyleSheet, Animated} from 'react-native';
 import {GLView} from 'expo-gl';
 import ExpoTHREE, {THREE} from 'expo-three';
 import {useSelector} from 'react-redux';
-import {Header, Text} from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import Sound from 'react-native-sound';
 import _ from 'lodash';
 import LottieView from 'lottie-react-native';
@@ -14,9 +14,9 @@ import admob, {
   MaxAdContentRating,
   firebase,
 } from '@react-native-firebase/admob';
-
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
+import MyHeader from '../components/MyHeader';
 import coinUrlInfo from './coinUrlInfo';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
@@ -262,9 +262,6 @@ export default function Home() {
     }
   };
 
-  const adUnitId = 'ca-app-pub-8566072639292145/6439613511';
-  // const adUnitId = TestIds.BANNER;
-
   return (
     <SafeAreaProvider
       style={{
@@ -272,15 +269,7 @@ export default function Home() {
         height: screenHeight,
         backgroundColor: '#5fbaff',
       }}>
-      <Header
-        barStyle="default"
-        // centerComponent={
-        //   <Text style={{color: '#ffee7e', fontWeight: 'bold'}}>MUZISUNG</Text>
-        // }
-        containerStyle={{
-          backgroundColor: 'transparent',
-          borderBottomColor: 'transparent',
-        }}></Header>
+      <MyHeader />
       <View style={styles.loadingView}></View>
       <GLView
         style={{
@@ -323,21 +312,6 @@ export default function Home() {
           backgroundColor: 'transparent',
         }}>
         <View onTouchStart={spinCoin} style={styles.touchView}></View>
-      </View>
-      <View style={[styles.bannerView]}>
-        <BannerAd
-          unitId={adUnitId}
-          size={BannerAdSize.BANNER}
-          onAdLoaded={e => {
-            console.log('Advert loaded');
-          }}
-          onAdFailedToLoad={e => {
-            console.log('Fail ad');
-          }}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
       </View>
     </SafeAreaProvider>
   );
