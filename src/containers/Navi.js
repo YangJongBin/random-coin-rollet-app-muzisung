@@ -56,25 +56,25 @@ const MainStack = props => {
 };
 
 export default function Navi() {
-  const {resInfo} = useSelector(state => state.bithumb);
+  const {tickerInfo} = useSelector(state => state.bithumbTicker);
   const [isOpen, setIsOpen] = useState(false);
   const navigationRef = useRef(null);
   const [stackName, setStackName] = useState('Spin');
 
+  // 최근 접속 메뉴
   AsyncStorage.getItem('stackName').then(res => {
     setStackName(res);
-    console.log('@@0res ==>', res);
   });
 
   return (
     <NavigationContainer ref={navigationRef}>
-      {_.isEmpty(resInfo.data) ? (
+      {_.isEmpty(tickerInfo) ? (
         <SplashStack />
       ) : (
         <MainStack stackName={stackName} />
       )}
 
-      <SpeedDial
+      {/* <SpeedDial
         style={{opacity: _.isEmpty(resInfo.data) ? 0 : 1}}
         isOpen={isOpen}
         color={'#2980b9'}
@@ -100,7 +100,7 @@ export default function Navi() {
             setIsOpen(false);
           }}
         />
-      </SpeedDial>
+      </SpeedDial> */}
     </NavigationContainer>
   );
 }

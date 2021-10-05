@@ -3,32 +3,22 @@ import {Text, StyleSheet, View, Image} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-
-import {getBithumbCoinList} from '../modules/bithumb';
 import _ from 'lodash';
+
+import {getBithumbTickerInfo} from '../modules/bithumb/bithumbTicker';
 
 export default function Splash() {
   const dispatch = useDispatch();
-  const reqBithumbCoinList = useCallback(
-    () => dispatch(getBithumbCoinList()),
+  const initBithumbRequest = useCallback(
+    () => dispatch(getBithumbTickerInfo()),
     [dispatch],
   );
 
-  const {isLoading, isError, screenMoveTarget, resInfo} = useSelector(
-    state => state.bithumb,
-  );
-
-  // const navigation = useNavigation();
-
   useEffect(() => {
     setTimeout(() => {
-      reqBithumbCoinList();
+      initBithumbRequest();
     }, 2500);
   }, []);
-
-  // if(_.toNumber(resInfo.status) < 500){
-  //     navigation.navigate('Home');
-  // }
 
   return (
     <View style={styles.content}>
@@ -51,8 +41,6 @@ const styles = StyleSheet.create({
 
   loading: {
     width: '30%',
-    // marginLeft: 5,
-    // marginBottom: 7,
     justifyContent: 'center',
     alignItems: 'center',
   },

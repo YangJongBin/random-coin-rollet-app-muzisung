@@ -1,10 +1,12 @@
-import { combineReducers } from 'redux';
-import bithumb from './bithumb';
-import random from './random'
+import {combineReducers} from 'redux';
+import bithumbTicker from './bithumb/bithumbTicker';
+import bithumbOrderBook from './bithumb/bithumbOrderBook';
+import bithumbTransactionHistory from './bithumb/bithumbTransactionHistory';
 
 const rootReducer = combineReducers({
-    bithumb,
-    random
-})
+  bithumbTicker,
+  bithumbOrderBook,
+  bithumbTransactionHistory,
+});
 
 export default rootReducer;
