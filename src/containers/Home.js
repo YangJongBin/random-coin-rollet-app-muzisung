@@ -4,7 +4,7 @@ import {View, Dimensions, StyleSheet, Animated} from 'react-native';
 import {GLView} from 'expo-gl';
 import ExpoTHREE, {THREE} from 'expo-three';
 import {useSelector, useDispatch} from 'react-redux';
-import {Text} from 'react-native-elements';
+import {Text, Button} from 'react-native-elements';
 import Sound from 'react-native-sound';
 import _ from 'lodash';
 import LottieView from 'lottie-react-native';
@@ -16,14 +16,17 @@ import admob, {
   firebase,
 } from '@react-native-firebase/admob';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {useSpring, animated} from '@react-spring/native';
 
 import MyHeader from '../components/MyHeader';
 import coinUrlInfo from './coinUrlInfo';
+import DetailView from '../components/DetailView';
 import {getBithumbOrderBookInfo} from '../modules/bithumb/bithumbOrderBook';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 
 export default function Home() {
+  // state
   const [bithumbCoinsInfo, setBitHumbCoinsInfo] = useState({});
   const [selectedCoinName, setSelectedCoinName] = useState('');
   const [selectedCoinInfo, setSelectedCoinInfo] = useState({});
@@ -31,6 +34,8 @@ export default function Home() {
   const [isTexture, setIstexture] = useState(false);
   const [loadingOpacity, setLoadingOpacity] = useState(1);
   const [twinkleOpacity, setTwinkleOpacity] = useState(0);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [detailBtnOpacity, setDetailBtnOpacity] = useState(0);
 
   const resultSound = new Sound(require('../sound/result.mp3')); // 결과 사운드
   const spinSound = new Sound(require('../sound/spin.mp3')); // 터치 순간 사운드
@@ -59,7 +64,7 @@ export default function Home() {
   this.animationFrame;
   this.rotationY = 0;
   this.textureMaterial;
-  this.coinPositionY = 1.5;
+  this.coinPositionY = 0;
 
   const that = this;
 
@@ -77,6 +82,10 @@ export default function Home() {
     THREE.suppressExpoWarnings();
     setBitHumbCoinsInfo(tickerInfo.data);
   }, []);
+
+  // TODO: detail animation
+  const AnimatedView = animated(View);
+  const detailAnimation = useSpring({bottom: isDetailOpen ? '18%' : '0%'});
 
   // three js context 세팅
   const onContextCreate = gl => {
@@ -257,6 +266,7 @@ export default function Home() {
         setSelectedCoinInfo(that.selectedCoinInfo);
         reqBithumbOrderBookInfo({coinName: that.selectedCoin, payment: 'KRW'});
         setTitleOpacity(1);
+        setDetailBtnOpacity(1);
       }
     }
 
@@ -265,9 +275,13 @@ export default function Home() {
 
   // 터치 이벤트
   const spinCoin = () => {
+    if (isDetailOpen) {
+      setIsDetailOpen(false);
+      setDetailBtnOpacity(1);
+    }
     cancelAnimationFrame(that.animationFrame);
 
-    if (isTexture) {
+    if (isTexture && !isDetailOpen) {
       that.changeTexture = null;
 
       const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
@@ -304,44 +318,57 @@ export default function Home() {
         backgroundColor: '#5fbaff',
       }}>
       {/* 해더 영역 */}
-      <MyHeader />
+      {/* <MyHeader /> */}
       {/* 로딩 영역 */}
-      <View style={styles.loadingView}></View>
-      {/* 메인 동정 영역 */}
-      <GLView
-        style={{
-          display: 'flex',
-          flex: 1,
-        }}
-        onContextCreate={onContextCreate}
-      />
-      {/* 정해진 코인 이름 영역 */}
-      <Animated.View style={[styles.coinTitleView, {opacity: titleOpacity}]}>
-        <Text style={styles.coinTitle}>{selectedCoinName}</Text>
-      </Animated.View>
-      {/* 코인 반짝반짝 로띠 영역 */}
-      <LottieView
-        ref={animation => {
-          this.animation = animation;
-        }}
-        progress={1}
-        style={{
-          position: 'absolute',
-        }}
-        source={require('../lottie/squib.json')}
-        loop={false}
-      />
-      {/* 코인 빠밤 로띠 영역 */}
-      <LottieView
-        ref={twinkleLottie => {
-          this.twinkleLottie = twinkleLottie;
-        }}
-        style={{position: 'absolute', opacity: twinkleOpacity}}
-        source={require('../lottie/twinkle.json')}
-        autoPlay
-        loop={true}
-      />
-      {/* <View
+      <AnimatedView
+        style={[
+          detailAnimation,
+          {
+            width: '100%',
+            height: '100%',
+            // bottom: '0%', // xFIXME:
+          },
+        ]}>
+        <View style={styles.loadingView}></View>
+        {/* 메인 동정 영역 */}
+
+        <GLView
+          style={{
+            display: 'flex',
+            flex: 1,
+          }}
+          onContextCreate={onContextCreate}
+        />
+        {/* 정해진 코인 이름 영역 */}
+        <Animated.View style={[styles.coinTitleView, {opacity: titleOpacity}]}>
+          <Text style={styles.coinTitle}>{selectedCoinName}</Text>
+        </Animated.View>
+        {/* 코인 반짝반짝 로띠 영역 */}
+        <LottieView
+          ref={animation => {
+            this.animation = animation;
+          }}
+          progress={1}
+          style={{
+            position: 'absolute',
+          }}
+          source={require('../lottie/squib.json')}
+          loop={false}
+        />
+        {/* 코인 빠밤 로띠 영역 */}
+        <LottieView
+          ref={twinkleLottie => {
+            this.twinkleLottie = twinkleLottie;
+          }}
+          style={{
+            position: 'absolute',
+            opacity: twinkleOpacity,
+          }}
+          source={require('../lottie/twinkle.json')}
+          autoPlay
+          loop={true}
+        />
+        {/* <View
         style={{
           position: 'absolute',
           width: '100%',
@@ -352,58 +379,72 @@ export default function Home() {
           backgroundColor: 'transparent',
         }}>
         <View
-          style={{
-            width: '85%',
-            height: '20%',
-            marginTop: 400,
-            backgroundColor: 'black',
-            borderRadius: 10,
-            flexDirection: 'row',
-            opacity: 0.4,
-          }}>
-          <View
-            style={{
-              flex: 1,
-              padding: 10,
-              justifyContent: 'space-between',
-              color: 'white',
-            }}>
-            <Text style={styles.coinInfoFont}>
-              시가 {selectedCoinInfo['opening_price']}
-            </Text>
-            <Text style={styles.coinInfoFont}>test1</Text>
-            <Text style={styles.coinInfoFont}>test1</Text>
-            <Text style={styles.coinInfoFont}>test1</Text>
-            <Text style={styles.coinInfoFont}>test1</Text>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              padding: 10,
-              justifyContent: 'space-between',
-              color: 'white',
-            }}>
-            <Text>test1</Text>
-            <Text>test1</Text>
-            <Text>test1</Text>
-            <Text>test1</Text>
-            <Text>test1</Text>
-          </View>
+        style={{
+          width: '85%',
+          height: '20%',
+          marginTop: 400,
+          backgroundColor: 'black',
+          borderRadius: 10,
+          flexDirection: 'row',
+          opacity: 0.4,
+        }}>
+        <View
+        style={{
+          flex: 1,
+          padding: 10,
+          justifyContent: 'space-between',
+          color: 'white',
+        }}>
+        <Text style={styles.coinInfoFont}>
+        시가 {selectedCoinInfo['opening_price']}
+        </Text>
+        <Text style={styles.coinInfoFont}>test1</Text>
+        <Text style={styles.coinInfoFont}>test1</Text>
+        <Text style={styles.coinInfoFont}>test1</Text>
+        <Text style={styles.coinInfoFont}>test1</Text>
+        </View>
+        <View
+        style={{
+          flex: 1,
+          padding: 10,
+          justifyContent: 'space-between',
+          color: 'white',
+        }}>
+        <Text>test1</Text>
+        <Text>test1</Text>
+        <Text>test1</Text>
+        <Text>test1</Text>
+        <Text>test1</Text>
+        </View>
         </View>
       </View> */}
-      {/* 터치 영역 제한을 위한 영역 */}
-      <View
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'transparent',
-        }}>
-        <View onTouchStart={spinCoin} style={styles.touchView}></View>
-      </View>
+        {/* 터치 영역 제한을 위한 영역 */}
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'transparent',
+          }}>
+          <Button
+            style={(styles.detailButton, [{opacity: 0}])}
+            title="fakeArea"></Button>
+          <View onTouchStart={spinCoin} style={styles.touchView}></View>
+          <Animated.View style={{opacity: detailBtnOpacity}}>
+            <Button
+              style={[styles.detailButton]}
+              title="DETAIL"
+              onPress={() => {
+                setIsDetailOpen(!isDetailOpen);
+                setDetailBtnOpacity(0);
+              }}></Button>
+          </Animated.View>
+          <DetailView />
+        </View>
+      </AnimatedView>
     </SafeAreaProvider>
   );
 }
@@ -415,7 +456,7 @@ const styles = StyleSheet.create({
   coinTitleView: {
     width: '100%',
     position: 'absolute',
-    top: '28%',
+    top: '29%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -439,7 +480,9 @@ const styles = StyleSheet.create({
   touchView: {
     width: '50%',
     height: '25%',
-    backgroundColor: 'transparent',
+    opacity: 0.5,
+    margin: 10,
+    backgroundColor: 'gray',
   },
   bannerView: {
     position: 'absolute',
@@ -467,4 +510,5 @@ const styles = StyleSheet.create({
   coinInfoFont: {
     color: 'white',
   },
+  detailButton: {},
 });

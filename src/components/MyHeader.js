@@ -7,12 +7,13 @@ export default class MyHeader extends Component {
     return (
       <Header
         barStyle="default"
-        // centerComponent={
-        //   <Text style={{color: '#ffee7e', fontWeight: 'bold'}}>MUZISUNG</Text>
-        // }
+        centerComponent={
+          <Text style={{color: '#ffee7e', fontWeight: 'bold'}}>MUZISUNG</Text>
+        }
         containerStyle={{
           backgroundColor: 'transparent',
           borderBottomColor: 'transparent',
+          opacity: 0,
         }}></Header>
     );
   }
