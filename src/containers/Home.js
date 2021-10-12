@@ -1,6 +1,18 @@
-import React, {useRef, useEffect, useState, useCallback} from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useContext,
+} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import {View, Dimensions, StyleSheet, Animated} from 'react-native';
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 import {GLView} from 'expo-gl';
 import ExpoTHREE, {THREE} from 'expo-three';
 import {useSelector, useDispatch} from 'react-redux';
@@ -266,7 +278,7 @@ export default function Home() {
         setSelectedCoinInfo(that.selectedCoinInfo);
         reqBithumbOrderBookInfo({coinName: that.selectedCoin, payment: 'KRW'});
         setTitleOpacity(1);
-        setDetailBtnOpacity(1);
+        setDetailBtnOpacity(0.9);
       }
     }
 
@@ -277,7 +289,7 @@ export default function Home() {
   const spinCoin = () => {
     if (isDetailOpen) {
       setIsDetailOpen(false);
-      setDetailBtnOpacity(1);
+      setDetailBtnOpacity(0.9);
     }
     cancelAnimationFrame(that.animationFrame);
 
@@ -326,7 +338,6 @@ export default function Home() {
           {
             width: '100%',
             height: '100%',
-            // bottom: '0%', // xFIXME:
           },
         ]}>
         <View style={styles.loadingView}></View>
@@ -368,56 +379,7 @@ export default function Home() {
           autoPlay
           loop={true}
         />
-        {/* <View
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'transparent',
-        }}>
-        <View
-        style={{
-          width: '85%',
-          height: '20%',
-          marginTop: 400,
-          backgroundColor: 'black',
-          borderRadius: 10,
-          flexDirection: 'row',
-          opacity: 0.4,
-        }}>
-        <View
-        style={{
-          flex: 1,
-          padding: 10,
-          justifyContent: 'space-between',
-          color: 'white',
-        }}>
-        <Text style={styles.coinInfoFont}>
-        시가 {selectedCoinInfo['opening_price']}
-        </Text>
-        <Text style={styles.coinInfoFont}>test1</Text>
-        <Text style={styles.coinInfoFont}>test1</Text>
-        <Text style={styles.coinInfoFont}>test1</Text>
-        <Text style={styles.coinInfoFont}>test1</Text>
-        </View>
-        <View
-        style={{
-          flex: 1,
-          padding: 10,
-          justifyContent: 'space-between',
-          color: 'white',
-        }}>
-        <Text>test1</Text>
-        <Text>test1</Text>
-        <Text>test1</Text>
-        <Text>test1</Text>
-        <Text>test1</Text>
-        </View>
-        </View>
-      </View> */}
+        <DetailView isDetailView={isDetailOpen} />
         {/* 터치 영역 제한을 위한 영역 */}
         <View
           style={{
@@ -433,16 +395,25 @@ export default function Home() {
             style={(styles.detailButton, [{opacity: 0}])}
             title="fakeArea"></Button>
           <View onTouchStart={spinCoin} style={styles.touchView}></View>
-          <Animated.View style={{opacity: detailBtnOpacity}}>
-            <Button
-              style={[styles.detailButton]}
-              title="DETAIL"
+          <Animated.View
+            style={{
+              opacity: detailBtnOpacity,
+            }}>
+            {/* detail 버튼 */}
+            <TouchableOpacity
+              style={[styles.detailButton, {opacity: detailBtnOpacity}]}
               onPress={() => {
                 setIsDetailOpen(!isDetailOpen);
                 setDetailBtnOpacity(0);
-              }}></Button>
+              }}>
+              <LottieView
+                style={{width: 40}}
+                source={require('../lottie/detailArrow.json')}
+                loop={true}
+                autoPlay
+              />
+            </TouchableOpacity>
           </Animated.View>
-          <DetailView />
         </View>
       </AnimatedView>
     </SafeAreaProvider>
@@ -482,7 +453,7 @@ const styles = StyleSheet.create({
     height: '25%',
     opacity: 0.5,
     margin: 10,
-    backgroundColor: 'gray',
+    // backgroundColor: 'gray',
   },
   bannerView: {
     position: 'absolute',
@@ -510,5 +481,7 @@ const styles = StyleSheet.create({
   coinInfoFont: {
     color: 'white',
   },
-  detailButton: {},
+  detailButton: {
+    opacity: 0.9,
+  },
 });
