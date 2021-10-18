@@ -15,10 +15,10 @@ const initStatus = {
   resInfo: {},
 };
 
-export const getBithumbCoinList = params => ({
+export const getBithumbTransactionHistory = params => ({
   type: BITHUMB_TRANSACTION_HISTORY_INFO,
   payload: axios.get(
-    `https://api.bithumb.com/public/transaction-history/${params.coinName}_${params.payment}`,
+    `https://api.bithumb.com/public/transaction_history/${params.coinName}_${params.payment}?count=100`,
   ),
 });
 
@@ -33,7 +33,7 @@ export default handleActions(
       ...state,
       loading: false,
       isError: false,
-      transctionHistoryInfo: action.payload.data,
+      transactionHistoryInfo: action.payload.data,
     }),
     [BITHUMB_TRANSACTION_HISTORY_INFO_FAILURE]: (state, action) => ({
       ...state,

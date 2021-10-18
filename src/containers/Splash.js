@@ -5,18 +5,18 @@ import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import _ from 'lodash';
 
-import {getBithumbTickerInfo} from '../modules/bithumb/bithumbTicker';
+import {getUpbitMarketAllList} from '../modules/upbit/upbitMarketAll';
 
 export default function Splash() {
   const dispatch = useDispatch();
-  const initBithumbRequest = useCallback(
-    () => dispatch(getBithumbTickerInfo()),
+  const initUpbitRequest = useCallback(
+    () => dispatch(getUpbitMarketAllList()),
     [dispatch],
   );
 
   useEffect(() => {
     setTimeout(() => {
-      initBithumbRequest();
+      initUpbitRequest();
     }, 2500);
   }, []);
 

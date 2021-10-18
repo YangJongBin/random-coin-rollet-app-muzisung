@@ -33,15 +33,18 @@ import {useSpring, animated} from '@react-spring/native';
 import MyHeader from '../components/MyHeader';
 import coinUrlInfo from './coinUrlInfo';
 import DetailView from '../components/DetailView';
-import {getBithumbOrderBookInfo} from '../modules/bithumb/bithumbOrderBook';
+
+// upbit
+import {getUpbitCandlesList} from '../modules/upbit/upbitCandles';
+// import {getUpbitOrderBookList} from '../modules/upbit/upbitOrderBook';
+import {getUpbitTickerList} from '../modules/upbit/upbitTicker';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 
 export default function Home() {
   // state
-  const [bithumbCoinsInfo, setBitHumbCoinsInfo] = useState({});
+  const [coinsNameArr, setCoinsNameArr] = useState({});
   const [selectedCoinName, setSelectedCoinName] = useState('');
-  const [selectedCoinInfo, setSelectedCoinInfo] = useState({});
   const [titleOpacity, setTitleOpacity] = useState(0);
   const [isTexture, setIstexture] = useState(false);
   const [loadingOpacity, setLoadingOpacity] = useState(1);
@@ -52,16 +55,24 @@ export default function Home() {
   const resultSound = new Sound(require('../sound/result.mp3')); // 결과 사운드
   const spinSound = new Sound(require('../sound/spin.mp3')); // 터치 순간 사운드
 
-  // bithumb 데이터 요청 결과
-  const {tickerInfo} = useSelector(state => state.bithumbTicker);
-  const {orderBookInfo} = useSelector(state => state.bithumbOrderBook);
+  // upbit 데이터 요청 결과
+  const {candlesList} = useSelector(state => state.upbitCandles);
+  const {marketAllList} = useSelector(state => state.upbitMarketAll);
+  const {tickerList} = useSelector(state => state.upbitTicker);
+  const {orderBookList} = useSelector(state => state.upbitOrderBook);
 
   // dispatch
   const dispatch = useDispatch();
-  // bithumb orderbook 요청
-  const reqBithumbOrderBookInfo = useCallback(
+  const reqUpbitCandlesList = useCallback(
     params => {
-      dispatch(getBithumbOrderBookInfo(params));
+      dispatch(getUpbitCandlesList(params));
+    },
+    [dispatch],
+  );
+
+  const reqUpbitTickerList = useCallback(
+    params => {
+      dispatch(getUpbitTickerList(params));
     },
     [dispatch],
   );
@@ -92,10 +103,19 @@ export default function Home() {
       });
 
     THREE.suppressExpoWarnings();
-    setBitHumbCoinsInfo(tickerInfo.data);
+
+    const coinNameList = _.chain(marketAllList)
+      .filter(marketAllInfo => {
+        return _.includes(marketAllInfo.market, 'KRW');
+      })
+      .map(marketAllInfo => {
+        return _.replace(marketAllInfo.market, 'KRW-', '');
+      })
+      .value();
+    setCoinsNameArr(coinNameList);
   }, []);
 
-  // TODO: detail animation
+  // detail animation
   const AnimatedView = animated(View);
   const detailAnimation = useSpring({bottom: isDetailOpen ? '18%' : '0%'});
 
@@ -255,7 +275,6 @@ export default function Home() {
         cancelAnimationFrame(that.animationFrame);
 
         AsyncStorage.getItem('stackName').then(result => {
-          console.log('@@ result==>', result);
           if ('Spin' === _.toString(result)) {
             that.animation.play();
             resultSound.play();
@@ -264,21 +283,28 @@ export default function Home() {
           }
         });
 
-        if (
-          that.selectedCoin === 'undefined' ||
-          that.selectedCoin === 'date' ||
-          that.selectedCoin === 'date' ||
-          !that.selectedCoin
-        ) {
+        if (_.isUndefined(that.selectedCoin)) {
           that.selectedCoin = 'RETRY';
         }
 
-        // TODO: 데이터 요청
         setSelectedCoinName(that.selectedCoin);
-        setSelectedCoinInfo(that.selectedCoinInfo);
-        reqBithumbOrderBookInfo({coinName: that.selectedCoin, payment: 'KRW'});
-        setTitleOpacity(1);
         setDetailBtnOpacity(0.9);
+        setTitleOpacity(1);
+
+        // TODO: 데이터 요청
+        reqUpbitCandlesList({
+          unit: 'minutes',
+          minute: 60,
+          payment: 'KRW',
+          coinName: that.selectedCoin,
+          count: 24,
+        });
+        reqUpbitTickerList({
+          payment: 'KRW',
+          coinName: that.selectedCoin,
+        });
+
+        that.rotationY = 0;
       }
     }
 
@@ -296,23 +322,21 @@ export default function Home() {
     if (isTexture && !isDetailOpen) {
       that.changeTexture = null;
 
-      const randomNumber = _.random(0, _.size(bithumbCoinsInfo));
-      const coinKeyArr = _.keys(bithumbCoinsInfo);
+      const randomNumber = _.random(0, _.size(coinsNameArr));
 
-      that.path = coinUrlInfo[coinKeyArr[randomNumber]]
-        ? coinUrlInfo[coinKeyArr[randomNumber]]
+      that.path = coinUrlInfo[coinsNameArr[randomNumber]]
+        ? coinUrlInfo[coinsNameArr[randomNumber]]
         : require('../img/RCRC.png');
 
-      const coinName = coinKeyArr[randomNumber];
-      const coinInfo = bithumbCoinsInfo[coinName];
+      const coinName = coinsNameArr[randomNumber];
+      const coinInfo = marketAllList[coinName];
 
       new ExpoTHREE.TextureLoader().load(that.path, texture => {
         if (_.isNull(that.changeTexture)) {
           that.selectedCoin = coinName;
           that.selectedCoinInfo = coinInfo;
-
-          console.log(that.selectedCoin);
           that.changeTexture = texture;
+          console.log('@@ selected Coin 1 ==>', that.selectedCoin);
         }
       });
 
@@ -379,7 +403,12 @@ export default function Home() {
           autoPlay
           loop={true}
         />
-        <DetailView isDetailView={isDetailOpen} />
+        {/* TODO: */}
+        <DetailView
+          isDetailView={isDetailOpen}
+          candlesList={candlesList}
+          tickerList={tickerList}
+        />
         {/* 터치 영역 제한을 위한 영역 */}
         <View
           style={{
@@ -393,7 +422,7 @@ export default function Home() {
           }}>
           <Button
             style={(styles.detailButton, [{opacity: 0}])}
-            title="fakeArea"></Button>
+            title=""></Button>
           <View onTouchStart={spinCoin} style={styles.touchView}></View>
           <Animated.View
             style={{
@@ -401,10 +430,12 @@ export default function Home() {
             }}>
             {/* detail 버튼 */}
             <TouchableOpacity
-              style={[styles.detailButton, {opacity: detailBtnOpacity}]}
+              style={[styles.detailButton]}
               onPress={() => {
-                setIsDetailOpen(!isDetailOpen);
-                setDetailBtnOpacity(0);
+                if (that.rotationY === 0) {
+                  setIsDetailOpen(!isDetailOpen);
+                  setDetailBtnOpacity(0);
+                }
               }}>
               <LottieView
                 style={{width: 40}}
@@ -481,7 +512,5 @@ const styles = StyleSheet.create({
   coinInfoFont: {
     color: 'white',
   },
-  detailButton: {
-    opacity: 0.9,
-  },
+  detailButton: {},
 });

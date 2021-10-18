@@ -12,9 +12,11 @@ const initStatus = {
   resInfo: {},
 };
 
-export const getBithumbTickerInfo = () => ({
+export const getBithumbTickerInfo = params => ({
   type: BITHUMB_TICKER_INFO,
-  payload: axios.get('https://api.bithumb.com/public/ticker/all'),
+  payload: axios.get(
+    `https://api.bithumb.com/public/ticker/${params.coinName}_${params.payment}`,
+  ),
 });
 
 export default handleActions(

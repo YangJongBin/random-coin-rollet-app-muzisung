@@ -56,7 +56,7 @@ const MainStack = props => {
 };
 
 export default function Navi() {
-  const {tickerInfo} = useSelector(state => state.bithumbTicker);
+  const {marketAllList} = useSelector(state => state.upbitMarketAll);
   const [isOpen, setIsOpen] = useState(false);
   const navigationRef = useRef(null);
   const [stackName, setStackName] = useState('Spin');
@@ -68,7 +68,7 @@ export default function Navi() {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      {_.isEmpty(tickerInfo) ? (
+      {_.isEmpty(marketAllList) ? (
         <SplashStack />
       ) : (
         <MainStack stackName={stackName} />
