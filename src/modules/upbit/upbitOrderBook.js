@@ -15,7 +15,7 @@ const initStatus = {
 export const getUpbitOrderBookList = params => ({
   type: UPBIT_ORDER_BOOK_LIST,
   payload: axios.get(
-    `https://api.upbit.com/v1/candles/${params.unit}/${params.minute}?market=${params.payment}-${params.coinName}&count=${params.count}`,
+    `https://api.upbit.com/v1/orderbook?markets=${params.payment}-${params.coinName}`,
   ),
 });
 

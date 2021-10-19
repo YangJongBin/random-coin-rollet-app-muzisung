@@ -1,14 +1,7 @@
-import React, {
-  Component,
-  useContext,
-  createContext,
-  useState,
-  useRef,
-  useEffect,
-} from 'react';
+import React from 'react';
 import {Text, StyleSheet, View, Dimensions, Animated} from 'react-native';
 import {useSpring, animated} from '@react-spring/native';
-import {LineChart, Grid, AreaChart} from 'react-native-svg-charts';
+import {AreaChart} from 'react-native-svg-charts';
 import {Defs, LinearGradient, Stop} from 'react-native-svg';
 import * as shape from 'd3-shape';
 import _ from 'lodash';
@@ -36,8 +29,6 @@ export const DetailView = props => {
     delay: 300,
   });
 
-  // TODO:
-
   let price = 0;
   let priceRate = 0;
   let comparePrice = 0;
@@ -45,6 +36,46 @@ export const DetailView = props => {
   let chartData = [];
   let priceRateUnit = '';
   let priceColor = 'white';
+  let askList = [
+    {
+      price: 0,
+      size: 0,
+      prcieRate: '0.00',
+      color: 'white',
+    },
+    {
+      price: 0,
+      size: 0,
+      prcieRate: '0.00',
+      color: 'white',
+    },
+    {
+      price: 0,
+      size: 0,
+      prcieRate: '0.00',
+      color: 'white',
+    },
+  ];
+  let bidList = [
+    {
+      price: 0,
+      size: 0,
+      prcieRate: '0.00',
+      color: 'white',
+    },
+    {
+      price: 0,
+      size: 0,
+      prcieRate: '0.00',
+      color: 'white',
+    },
+    {
+      price: 0,
+      size: 0,
+      prcieRate: '0.00',
+      color: 'white',
+    },
+  ];
 
   if (!_.isEmpty(props.candlesList)) {
     chartData = _.chain(props.candlesList)
@@ -68,6 +99,7 @@ export const DetailView = props => {
     tradePrice = _.chain(tickerInfo)
       .get('acc_trade_price_24h')
       .toNumber()
+      .multiply(0.000001)
       .floor()
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       .value();
@@ -80,13 +112,85 @@ export const DetailView = props => {
     }
   }
 
-  // ticker
-  // if (!_.isEmpty(props.tickerInfo)) {
-  //   comparePrice = _.chain(props.tickerInfo.data.fluctate_24H)
-  //     .toNumber()
-  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  //     .value();
-  // }
+  if (!_.isEmpty(props.orderBookList)) {
+    const priceNum = _.chain(price).replace(',', '').toNumber().value();
+
+    askList = _.chain(props.orderBookList)
+      .head()
+      .get('orderbook_units')
+      .map(info => {
+        const result = {
+          price: _.chain(info)
+            .get('ask_price')
+            .toNumber()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            .value(),
+          size: _.chain(info).get('ask_size').toNumber().floor(2).value(),
+          color: 'white',
+          priceRate: _.chain(info)
+            .get('ask_price')
+            .toNumber()
+            .subtract(priceNum)
+            .divide(priceNum)
+            .multiply(100)
+            .floor(2)
+            .value(),
+        };
+
+        if (result.priceRate > 0) {
+          result.color = '#d95b66';
+        } else if (result.priceRate < 0) {
+          result.color = '#3b71d4';
+        }
+
+        if (_.size(_.replace(result.priceRate, '-', '')) === 3) {
+          result.priceRate = result.priceRate + '0';
+        }
+
+        result.priceRate = result.priceRate == 0 ? '0.00' : result.priceRate;
+
+        return result;
+      })
+      .value();
+
+    bidList = _.chain(props.orderBookList)
+      .head()
+      .get('orderbook_units')
+      .map(info => {
+        const result = {
+          price: _.chain(info)
+            .get('bid_price')
+            .toNumber()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            .value(),
+          size: _.chain(info).get('bid_size').toNumber().floor(2).value(),
+          color: 'white',
+          priceRate: _.chain(info)
+            .get('bid_price')
+            .toNumber()
+            .subtract(priceNum)
+            .divide(priceNum)
+            .multiply(100)
+            .floor(2)
+            .value(),
+        };
+
+        if (result.priceRate > 0) {
+          result.color = '#d95b66';
+        } else if (result.priceRate < 0) {
+          result.color = '#3b71d4';
+        }
+
+        if (_.size(_.replace(result.priceRate, '-', '')) === 3) {
+          result.priceRate = result.priceRate + '0';
+        }
+
+        result.priceRate = result.priceRate == 0 ? '0.00' : result.priceRate;
+
+        return result;
+      })
+      .value();
+  }
 
   const Gradient = ({index}) => (
     <Defs key={index}>
@@ -128,9 +232,18 @@ export const DetailView = props => {
         </View>
         <View style={styles.priceArea}>
           <View style={{alignItems: 'flex-start'}}>
-            <View>
+            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
               <Text style={[styles.currPriceText, {color: priceColor}]}>
                 {price}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 10,
+                  marginBottom: 4,
+                  marginLeft: 4,
+                  color: priceColor,
+                }}>
+                KRW
               </Text>
             </View>
           </View>
@@ -155,7 +268,7 @@ export const DetailView = props => {
           <Text style={styles.tradePriceText}>TRADE</Text>
         </View>
         <View style={{flex: 1, alignItems: 'flex-end'}}>
-          <Text style={styles.tradePriceText}>{tradePrice}</Text>
+          <Text style={styles.tradePriceText}>{tradePrice} M</Text>
         </View>
       </AnimatedView>
       {/* 호가창 */}
@@ -172,34 +285,46 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#3498db',
+                backgroundColor: '#1f80db',
                 marginRight: 0,
                 // borderTopLeftRadius: 7,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
-              <Text style={styles.orderBookText}>1,000,000</Text>
-              <Text style={styles.orderBookText}>+4.41</Text>
+              <Text style={[styles.orderBookText, {color: askList[0].color}]}>
+                {askList[0].price}
+              </Text>
+              <Text style={[styles.orderBookText, {color: askList[0].color}]}>
+                {askList[0].priceRate}%
+              </Text>
             </View>
             <View>
-              <Text style={styles.orderBookText}>5.31513</Text>
+              <Text style={[styles.orderBookText, {color: askList[0].color}]}>
+                {askList[0].size}
+              </Text>
             </View>
           </View>
           <View
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#e74c3c',
+                backgroundColor: '#cf5144',
                 marginLeft: 0,
                 // borderTopRightRadius: 7,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
-              <Text style={styles.orderBookText}>1,000,000</Text>
-              <Text style={styles.orderBookText}>+4.41</Text>
+              <Text style={[styles.orderBookText, {color: bidList[0].color}]}>
+                {bidList[0].price}
+              </Text>
+              <Text style={[styles.orderBookText, {color: bidList[0].color}]}>
+                {bidList[0].priceRate}%
+              </Text>
             </View>
             <View>
-              <Text style={styles.orderBookText}>5.31513</Text>
+              <Text style={[styles.orderBookText, {color: bidList[0].color}]}>
+                {bidList[0].size}
+              </Text>
             </View>
           </View>
         </View>
@@ -215,36 +340,48 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#3498db',
+                backgroundColor: '#1f80db',
                 marginRight: 0,
                 borderTopRightRadius: 0,
                 borderBottomRightRadius: 0,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
-              <Text style={styles.orderBookText}>1,000,000</Text>
-              <Text style={styles.orderBookText}>+4.41</Text>
+              <Text style={[styles.orderBookText, {color: askList[1].color}]}>
+                {askList[1].price}
+              </Text>
+              <Text style={[styles.orderBookText, {color: askList[1].color}]}>
+                {askList[1].priceRate}%
+              </Text>
             </View>
             <View>
-              <Text style={styles.orderBookText}>5.31513</Text>
+              <Text style={[styles.orderBookText, {color: askList[1].color}]}>
+                {askList[1].size}
+              </Text>
             </View>
           </View>
           <View
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#e74c3c',
+                backgroundColor: '#cf5144',
                 marginLeft: 0,
                 borderTopLeftRadius: 0,
                 borderBottomLeftRadius: 0,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
-              <Text style={styles.orderBookText}>1,000,000</Text>
-              <Text style={styles.orderBookText}>+4.41</Text>
+              <Text style={[styles.orderBookText, {color: bidList[1].color}]}>
+                {bidList[1].price}
+              </Text>
+              <Text style={[styles.orderBookText, {color: bidList[1].color}]}>
+                {bidList[1].priceRate}%
+              </Text>
             </View>
             <View>
-              <Text style={styles.orderBookText}>5.31513</Text>
+              <Text style={[styles.orderBookText, {color: bidList[1].color}]}>
+                {bidList[1].size}
+              </Text>
             </View>
           </View>
         </View>
@@ -260,34 +397,46 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#3498db',
+                backgroundColor: '#1f80db',
                 marginRight: 0,
                 borderBottomLeftRadius: 7,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
-              <Text style={styles.orderBookText}>1,000,000</Text>
-              <Text style={styles.orderBookText}>+4.41</Text>
+              <Text style={[styles.orderBookText, {color: askList[2].color}]}>
+                {askList[2].price}
+              </Text>
+              <Text style={[styles.orderBookText, {color: askList[2].color}]}>
+                {askList[2].priceRate}%
+              </Text>
             </View>
             <View>
-              <Text style={styles.orderBookText}>5.31513</Text>
+              <Text style={[styles.orderBookText, {color: askList[2].color}]}>
+                {askList[2].size}
+              </Text>
             </View>
           </View>
           <View
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#e74c3c',
+                backgroundColor: '#cf5144',
                 marginLeft: 0,
                 borderBottomRightRadius: 7,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
-              <Text style={styles.orderBookText}>1,000,000</Text>
-              <Text style={styles.orderBookText}>+4.41</Text>
+              <Text style={[styles.orderBookText, {color: bidList[2].color}]}>
+                {bidList[2].price}
+              </Text>
+              <Text style={[styles.orderBookText, {color: bidList[2].color}]}>
+                {bidList[2].priceRate}%
+              </Text>
             </View>
             <View>
-              <Text style={styles.orderBookText}>5.31513</Text>
+              <Text style={[styles.orderBookText, {color: bidList[2].color}]}>
+                {bidList[2].size}
+              </Text>
             </View>
           </View>
         </View>
@@ -299,43 +448,43 @@ export const DetailView = props => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: '65%',
+    top: '66%',
     width: screenWidth,
     justifyContent: 'center',
     alignItems: 'center',
   },
   detailArea1: {
     width: '80%',
-    height: 150, // FIXME:
+    height: 150,
     flexDirection: 'column',
     margin: 3,
     alignItems: 'flex-start',
     borderRadius: 7,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    backgroundColor: '#4d6883', //FIXME:
+    backgroundColor: '#4d6883',
     shadowOpacity: 0.8,
   },
   detailArea2: {
     width: '80%',
-    height: 50, // FIXME:
+    height: 50,
     flexDirection: 'row',
     margin: 3,
     padding: 10,
     alignItems: 'center',
     // borderRadius: 7,
-    backgroundColor: '#4d6883', //FIXME:
+    backgroundColor: '#4d6883',
     shadowOpacity: 0.8,
   },
   detailArea3: {
     width: '80%',
-    // height: 150, // FIXME:
+    // height: 150,
     flexDirection: 'column',
     margin: 3,
     // padding: 5,
     alignItems: 'center',
     borderRadius: 7,
-    backgroundColor: '#4d6883', //FIXME:
+    backgroundColor: '#4d6883',
     shadowOpacity: 0.8,
   },
   priceArea: {
@@ -381,10 +530,12 @@ const styles = StyleSheet.create({
     flex: 1,
     // margin: 5,
     padding: 10,
+    opacity: 0.95,
     // borderRadius: 5,
   },
   orderBookText: {
     fontSize: 12,
+    fontWeight: 'bold',
   },
 });
 

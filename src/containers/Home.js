@@ -36,7 +36,7 @@ import DetailView from '../components/DetailView';
 
 // upbit
 import {getUpbitCandlesList} from '../modules/upbit/upbitCandles';
-// import {getUpbitOrderBookList} from '../modules/upbit/upbitOrderBook';
+import {getUpbitOrderBookList} from '../modules/upbit/upbitOrderBook';
 import {getUpbitTickerList} from '../modules/upbit/upbitTicker';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
@@ -73,6 +73,13 @@ export default function Home() {
   const reqUpbitTickerList = useCallback(
     params => {
       dispatch(getUpbitTickerList(params));
+    },
+    [dispatch],
+  );
+
+  const reqUpbitOrderBookList = useCallback(
+    params => {
+      dispatch(getUpbitOrderBookList(params));
     },
     [dispatch],
   );
@@ -304,6 +311,11 @@ export default function Home() {
           coinName: that.selectedCoin,
         });
 
+        reqUpbitOrderBookList({
+          payment: 'KRW',
+          coinName: that.selectedCoin,
+        });
+
         that.rotationY = 0;
       }
     }
@@ -408,6 +420,7 @@ export default function Home() {
           isDetailView={isDetailOpen}
           candlesList={candlesList}
           tickerList={tickerList}
+          orderBookList={orderBookList}
         />
         {/* 터치 영역 제한을 위한 영역 */}
         <View
@@ -421,8 +434,19 @@ export default function Home() {
             backgroundColor: 'transparent',
           }}>
           <Button
-            style={(styles.detailButton, [{opacity: 0}])}
-            title=""></Button>
+            style={
+              (styles.detailButton,
+              [
+                {
+                  opacity: 0,
+                  height: 20,
+                  marginTop: 20,
+                  color: 'white',
+                  width: 50,
+                },
+              ])
+            }
+            title="HI"></Button>
           <View onTouchStart={spinCoin} style={styles.touchView}></View>
           <Animated.View
             style={{
