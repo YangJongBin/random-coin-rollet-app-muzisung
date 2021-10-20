@@ -21,13 +21,18 @@ import Sound from 'react-native-sound';
 import _ from 'lodash';
 import LottieView from 'lottie-react-native';
 import admob, {
+  InterstitialAd,
   BannerAd,
   TestIds,
   BannerAdSize,
   MaxAdContentRating,
   firebase,
+  AdEventType,
 } from '@react-native-firebase/admob';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {
+  initialWindowMetrics,
+  SafeAreaProvider,
+} from 'react-native-safe-area-context';
 import {useSpring, animated} from '@react-spring/native';
 
 import MyHeader from '../components/MyHeader';
@@ -40,6 +45,13 @@ import {getUpbitOrderBookList} from '../modules/upbit/upbitOrderBook';
 import {getUpbitTickerList} from '../modules/upbit/upbitTicker';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
+const interstitialAd = InterstitialAd.createForAdRequest(
+  'ca-app-pub-8566072639292145/6667090011',
+  {
+    requestNonPersonalizedAdsOnly: true,
+    // keywords: ['fashion', 'clothing'],
+  },
+);
 
 export default function Home() {
   // state
@@ -51,6 +63,7 @@ export default function Home() {
   const [twinkleOpacity, setTwinkleOpacity] = useState(0);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [detailBtnOpacity, setDetailBtnOpacity] = useState(0);
+  const [loaded, setLoaded] = useState(false);
 
   const resultSound = new Sound(require('../sound/result.mp3')); // 결과 사운드
   const spinSound = new Sound(require('../sound/spin.mp3')); // 터치 순간 사운드
@@ -109,6 +122,28 @@ export default function Home() {
         // Request config successfully set!
       });
 
+    const eventListener = interstitialAd.onAdEvent(type => {
+      if (type === AdEventType.LOADED) {
+        setLoaded(true);
+      }
+      if (type === AdEventType.CLOSED) {
+        setLoaded(false);
+
+        interstitialAd.load();
+      }
+    });
+    interstitialAd.load();
+
+    return () => {
+      eventListener();
+    };
+  }, []);
+
+  // if (!loaded) {
+  //   return null;
+  // }
+
+  useEffect(() => {
     THREE.suppressExpoWarnings();
 
     const coinNameList = _.chain(marketAllList)
@@ -298,7 +333,7 @@ export default function Home() {
         setDetailBtnOpacity(0.9);
         setTitleOpacity(1);
 
-        // TODO: 데이터 요청
+        // 데이터 요청
         reqUpbitCandlesList({
           unit: 'minutes',
           minute: 60,
@@ -317,6 +352,13 @@ export default function Home() {
         });
 
         that.rotationY = 0;
+
+        if (
+          !_.chain(100).random().divide(5).toString().includes('.').value() &&
+          loaded
+        ) {
+          interstitialAd.show();
+        }
       }
     }
 
@@ -415,7 +457,6 @@ export default function Home() {
           autoPlay
           loop={true}
         />
-        {/* TODO: */}
         <DetailView
           isDetailView={isDetailOpen}
           candlesList={candlesList}

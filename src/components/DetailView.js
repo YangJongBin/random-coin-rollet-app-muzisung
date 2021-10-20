@@ -94,7 +94,7 @@ export const DetailView = props => {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       .value();
 
-    priceRate = _.floor(tickerInfo.signed_change_rate, 2);
+    priceRate = _.floor(tickerInfo.signed_change_rate, 3);
     comparePrice = tickerInfo.change_price;
     tradePrice = _.chain(tickerInfo)
       .get('acc_trade_price_24h')

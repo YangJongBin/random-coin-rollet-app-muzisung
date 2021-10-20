@@ -22,6 +22,8 @@ target 'rancoranco' do
   pod 'Firebase/Analytics'
   pod 'Firebase/AdMob'
 
+  pod 'react-native-version-check', :path =>'../node_modules/react-native-version-check'
+
   target 'rancorancoTests' do
     inherit! :complete
     # Pods for testing
