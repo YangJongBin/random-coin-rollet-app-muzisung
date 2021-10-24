@@ -46,6 +46,7 @@ import {getUpbitTickerList} from '../modules/upbit/upbitTicker';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 const interstitialAd = InterstitialAd.createForAdRequest(
+  // TestIds.INTERSTITIAL,
   'ca-app-pub-8566072639292145/6667090011',
   {
     requestNonPersonalizedAdsOnly: true,
@@ -173,7 +174,7 @@ export default function Home() {
     that.gl.canvas = {width, height};
     that.scene = new THREE.Scene();
     that.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    that.camera.position.set(0, 2, 20);
+    that.camera.position.set(0, 0, 20);
     that.camera.lookAt(this.scene.position);
 
     // 동전 형상 생성 (원통 모양)
@@ -317,12 +318,13 @@ export default function Home() {
         cancelAnimationFrame(that.animationFrame);
 
         AsyncStorage.getItem('stackName').then(result => {
-          if ('Spin' === _.toString(result)) {
-            that.animation.play();
-            resultSound.play();
-          } else {
-            return false;
-          }
+          // console.log('Spin ==>', result);
+          // if ('Spin' === _.toString(result)) {
+          that.animation.play();
+          resultSound.play();
+          // } else {
+          // return false;
+          // }
         });
 
         if (_.isUndefined(that.selectedCoin)) {
