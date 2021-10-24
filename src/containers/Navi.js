@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, BackHandler, Linking, Alert} from 'react-native';
 import AsyncStorage, {
   useAsyncStorage,
 } from '@react-native-community/async-storage';
@@ -9,6 +9,7 @@ import React, {useState, useRef, useEffect} from 'react';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector} from 'react-redux';
+import VersionCheck from 'react-native-version-check';
 
 import Home from './Home';
 import Splash from './Splash';
@@ -60,18 +61,54 @@ export default function Navi() {
   const [isOpen, setIsOpen] = useState(false);
   const navigationRef = useRef(null);
   const [stackName, setStackName] = useState('Spin');
+  const [isLastestVersion, setIsLastestVersion] = useState(false);
 
   // 최근 접속 메뉴
   AsyncStorage.getItem('stackName').then(res => {
     setStackName(res);
   });
 
+  useEffect(() => {
+    VersionCheck.getLatestVersion({
+      provider: 'appStore',
+    }).then(appStoreVersion => {
+      console.log('AppStore Version ==>', appStoreVersion);
+      console.log('this Version ==>', VersionCheck.getCurrentVersion());
+
+      if (appStoreVersion !== VersionCheck.getCurrentVersion()) {
+        Alert.alert(
+          '업데이트(Update)',
+          '최신 업데이트가 있습니다. 업데이트하시겠습니까?',
+          [
+            {
+              text: '업데이트',
+              onPress: () => {
+                Linking.openURL(
+                  'https://apps.apple.com/kr/app/muzisung-random-coin/id1580401825',
+                );
+                // BackHandler.exitApp();
+              },
+            },
+            {
+              text: '나중에',
+              onPress: () => {
+                // BackHandler.exitApp();
+              },
+            },
+          ],
+        );
+      } else {
+        setIsLastestVersion(true);
+      }
+    });
+  }, []);
+
   return (
     <NavigationContainer ref={navigationRef}>
-      {_.isEmpty(marketAllList) ? (
-        <SplashStack />
-      ) : (
+      {!_.isEmpty(marketAllList) && isLastestVersion ? (
         <MainStack stackName={stackName} />
+      ) : (
+        <SplashStack />
       )}
 
       {/* <SpeedDial
