@@ -1,10 +1,9 @@
 import React, {useCallback, useEffect, version} from 'react';
-import {Text, StyleSheet, View, Image} from 'react-native';
+import {Text, StyleSheet, View, Image, Alert} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import _ from 'lodash';
-import VersionCheck from 'react-native-version-check';
 
 import {getUpbitMarketAllList} from '../modules/upbit/upbitMarketAll';
 
