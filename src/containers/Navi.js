@@ -86,12 +86,14 @@ export default function Navi() {
                 Linking.openURL(
                   'https://apps.apple.com/kr/app/muzisung-random-coin/id1580401825',
                 );
+                setIsLastestVersion(true);
                 // BackHandler.exitApp();
               },
             },
             {
               text: '나중에',
               onPress: () => {
+                setIsLastestVersion(true);
                 // BackHandler.exitApp();
               },
             },
