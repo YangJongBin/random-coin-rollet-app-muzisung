@@ -72,10 +72,17 @@ export default function Navi() {
     VersionCheck.getLatestVersion({
       provider: 'appStore',
     }).then(appStoreVersion => {
-      console.log('AppStore Version ==>', appStoreVersion);
-      console.log('this Version ==>', VersionCheck.getCurrentVersion());
+      const appStoreVer = _.chain(appStoreVersion)
+        .replace('.', '')
+        .toNumber()
+        .value();
+      const currVer = _.chain(VersionCheck.getCurrentVersion())
+        .replace('.', '')
+        .replace('.', '')
+        .toNumber()
+        .value();
 
-      if (appStoreVersion !== VersionCheck.getCurrentVersion()) {
+      if (appStoreVer > currVer) {
         Alert.alert(
           '업데이트(Update)',
           '최신 업데이트가 있습니다. 업데이트하시겠습니까?',

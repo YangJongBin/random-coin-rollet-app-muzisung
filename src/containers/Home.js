@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useCallback,
-  useContext,
-} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   View,
@@ -22,17 +16,12 @@ import _ from 'lodash';
 import LottieView from 'lottie-react-native';
 import admob, {
   InterstitialAd,
-  BannerAd,
   TestIds,
   BannerAdSize,
   MaxAdContentRating,
-  firebase,
   AdEventType,
 } from '@react-native-firebase/admob';
-import {
-  initialWindowMetrics,
-  SafeAreaProvider,
-} from 'react-native-safe-area-context';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useSpring, animated} from '@react-spring/native';
 
 import MyHeader from '../components/MyHeader';
@@ -392,7 +381,7 @@ export default function Home() {
           that.selectedCoin = coinName;
           that.selectedCoinInfo = coinInfo;
           that.changeTexture = texture;
-          console.log('@@ selected Coin 1 ==>', that.selectedCoin);
+          console.log('@@ selected Coin  ==>', that.selectedCoin);
         }
       });
 

@@ -195,14 +195,8 @@ export const DetailView = props => {
   const Gradient = ({index}) => (
     <Defs key={index}>
       <LinearGradient id={'gradient'} x1={'0%'} y1={'0%'} x2={'0%'} y2={'100%'}>
-        <Stop
-          offset={'0%'}
-          stopColor={'rgb(26, 255, 146)'}
-          stopOpacity={0.7}></Stop>
-        <Stop
-          offset={'100%'}
-          stopColor={'rgb(26, 255, 146)'}
-          stopOpacity={0}></Stop>
+        <Stop offset={'0%'} stopColor={'#34cf85'} stopOpacity={1}></Stop>
+        <Stop offset={'100%'} stopColor={'#34cf85'} stopOpacity={1}></Stop>
       </LinearGradient>
     </Defs>
   );
@@ -226,7 +220,6 @@ export const DetailView = props => {
               strokeWidth: 0,
             }}
             contentInset={{top: 20, bottom: 20}}>
-            {/* <Grid /> */}
             <Gradient />
           </AreaChart>
         </View>
@@ -285,7 +278,7 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#1f80db',
+                backgroundColor: '#3186d6',
                 marginRight: 0,
                 // borderTopLeftRadius: 7,
               },
@@ -308,7 +301,7 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#cf5144',
+                backgroundColor: '#d65e51',
                 marginLeft: 0,
                 // borderTopRightRadius: 7,
               },
@@ -340,7 +333,7 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#1f80db',
+                backgroundColor: '#3186d6',
                 marginRight: 0,
                 borderTopRightRadius: 0,
                 borderBottomRightRadius: 0,
@@ -364,7 +357,7 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#cf5144',
+                backgroundColor: '#d65e51',
                 marginLeft: 0,
                 borderTopLeftRadius: 0,
                 borderBottomLeftRadius: 0,
@@ -397,7 +390,7 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#1f80db',
+                backgroundColor: '#3186d6',
                 marginRight: 0,
                 borderBottomLeftRadius: 7,
               },
@@ -420,7 +413,7 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#cf5144',
+                backgroundColor: '#d65e51',
                 marginLeft: 0,
                 borderBottomRightRadius: 7,
               },
@@ -509,7 +502,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.5,
     shadowOffset: {
       // height: 1,
     },
