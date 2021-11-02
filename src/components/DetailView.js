@@ -29,6 +29,7 @@ export const DetailView = props => {
     delay: 300,
   });
 
+  let coinName = '';
   let price = 0;
   let priceRate = 0;
   let comparePrice = 0;
@@ -76,6 +77,10 @@ export const DetailView = props => {
       color: 'white',
     },
   ];
+
+  if (!_.isEmpty(props.coinInfo)) {
+    coinName = props.coinInfo.english_name;
+  }
 
   if (!_.isEmpty(props.candlesList)) {
     chartData = _.chain(props.candlesList)
@@ -203,6 +208,29 @@ export const DetailView = props => {
 
   return (
     <AnimatedView style={[styles.container, detailAreaAnimation]}>
+      <View
+        style={{
+          // backgroundColor: 'gray',
+          width: '80%',
+          height: 40,
+          justifyContent: 'center',
+        }}>
+        <Text
+          style={{
+            fontSize: 25,
+            fontWeight: 'bold',
+            marginLeft: 5,
+            color: 'gold',
+            shadowOpacity: 0.5,
+            shadowRadius: 1,
+            shadowOffset: {
+              height: 2,
+            },
+          }}>
+          {coinName}
+        </Text>
+      </View>
+      {/* TITLE */}
       <AnimatedView style={[styles.detailArea1, detailArea1Animation]}>
         {/* 차트 영역 */}
         <View style={styles.chartArea}>

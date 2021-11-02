@@ -1,6 +1,6 @@
 {
   "name": "rancoranco",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

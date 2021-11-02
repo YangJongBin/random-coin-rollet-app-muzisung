@@ -20,6 +20,7 @@ import admob, {
   BannerAdSize,
   MaxAdContentRating,
   AdEventType,
+  BannerAd,
 } from '@react-native-firebase/admob';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useSpring, animated} from '@react-spring/native';
@@ -47,6 +48,7 @@ export default function Home() {
   // state
   const [coinsNameArr, setCoinsNameArr] = useState({});
   const [selectedCoinName, setSelectedCoinName] = useState('');
+  const [selectedCoinInfo, setSelectedCoinInfo] = useState({});
   const [titleOpacity, setTitleOpacity] = useState(0);
   const [isTexture, setIstexture] = useState(false);
   const [loadingOpacity, setLoadingOpacity] = useState(1);
@@ -149,7 +151,7 @@ export default function Home() {
 
   // detail animation
   const AnimatedView = animated(View);
-  const detailAnimation = useSpring({bottom: isDetailOpen ? '18%' : '0%'});
+  const detailAnimation = useSpring({bottom: isDetailOpen ? '23%' : '0%'});
 
   // three js context 세팅
   const onContextCreate = gl => {
@@ -321,6 +323,7 @@ export default function Home() {
         }
 
         setSelectedCoinName(that.selectedCoin);
+        setSelectedCoinInfo(that.selectedCoinInfo);
         setDetailBtnOpacity(0.9);
         setTitleOpacity(1);
 
@@ -374,7 +377,9 @@ export default function Home() {
         : require('../img/RCRC.png');
 
       const coinName = coinsNameArr[randomNumber];
-      const coinInfo = marketAllList[coinName];
+      const coinInfo = _.find(marketAllList, info => {
+        return _.includes(info.market, coinName);
+      });
 
       new ExpoTHREE.TextureLoader().load(that.path, texture => {
         if (_.isNull(that.changeTexture)) {
@@ -421,7 +426,7 @@ export default function Home() {
         />
         {/* 정해진 코인 이름 영역 */}
         <Animated.View style={[styles.coinTitleView, {opacity: titleOpacity}]}>
-          <Text style={styles.coinTitle}>{selectedCoinName}</Text>
+          {/* <Text style={styles.coinTitle}>{selectedCoinName}</Text> */}
         </Animated.View>
         {/* 코인 반짝반짝 로띠 영역 */}
         <LottieView
@@ -450,6 +455,7 @@ export default function Home() {
         />
         <DetailView
           isDetailView={isDetailOpen}
+          coinInfo={selectedCoinInfo}
           candlesList={candlesList}
           tickerList={tickerList}
           orderBookList={orderBookList}
@@ -501,6 +507,22 @@ export default function Home() {
               />
             </TouchableOpacity>
           </Animated.View>
+        </View>
+        <View style={[styles.bannerView, {opacity: detailBtnOpacity}]}>
+          <BannerAd
+            // unitId={TestIds.BANNER}
+            unitId={'ca-app-pub-8566072639292145/1537388587'}
+            size={BannerAdSize.BANNER}
+            onAdLoaded={e => {
+              console.log('Advert loaded');
+            }}
+            onAdFailedToLoad={e => {
+              console.log('Fail ad');
+            }}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
         </View>
       </AnimatedView>
     </SafeAreaProvider>
