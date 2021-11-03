@@ -74,6 +74,7 @@ export default function Navi() {
     }).then(appStoreVersion => {
       const appStoreVer = _.chain(appStoreVersion)
         .replace('.', '')
+        .replace('.', '')
         .toNumber()
         .value();
       const currVer = _.chain(VersionCheck.getCurrentVersion())
