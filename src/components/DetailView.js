@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, StyleSheet, View, Dimensions, Animated} from 'react-native';
 import {useSpring, animated} from '@react-spring/native';
 import {AreaChart} from 'react-native-svg-charts';
+import LottieView from 'lottie-react-native';
 import {Defs, LinearGradient, Stop} from 'react-native-svg';
 import * as shape from 'd3-shape';
 import _ from 'lodash';
+import LinearGradientView from 'react-native-linear-gradient';
 
 const AnimatedView = animated(View);
-const {width: screenWidth, height: screenHeight} = Dimensions.get('screen');
 
 export const DetailView = props => {
   const detailAreaAnimation = useSpring({
@@ -16,7 +17,7 @@ export const DetailView = props => {
   const detailArea1Animation = useSpring({
     opacity: props.isDetailView ? 1 : 0,
     shadowOffset: {height: props.isDetailView ? 3 : 0},
-    delay: 100,
+    delay: 200,
   });
   const detailArea2Animation = useSpring({
     opacity: props.isDetailView ? 1 : 0,
@@ -28,6 +29,13 @@ export const DetailView = props => {
     shadowOffset: {height: props.isDetailView ? 3 : 0},
     delay: 300,
   });
+  const detailArea4Animation = useSpring({
+    opacity: props.isDetailView ? 1 : 0,
+    shadowOffset: {height: props.isDetailView ? 3 : 0},
+    delay: 400,
+  });
+
+  const [isWarning, setIsWarning] = useState(false);
 
   let coinName = '';
   let price = 0;
@@ -78,8 +86,22 @@ export const DetailView = props => {
     },
   ];
 
+  let accTradePrice = 0;
+  let accTradePrice24h = 0;
+  let highest52WeekPrice = 0;
+  let lowest52WeekPrice = 0;
+  let prevClosingPrice = 0;
+
   if (!_.isEmpty(props.coinInfo)) {
-    coinName = props.coinInfo.english_name;
+    coinName = `${props.coinInfo.korean_name}(${_.replace(
+      props.coinInfo.market,
+      'KRW-',
+      '',
+    )})`;
+
+    if (props.coinInfo.market_warning === 'CAUTION') {
+      setIsWarning(true);
+    }
   }
 
   if (!_.isEmpty(props.candlesList)) {
@@ -101,18 +123,46 @@ export const DetailView = props => {
 
     priceRate = _.floor(tickerInfo.signed_change_rate, 3);
     comparePrice = tickerInfo.change_price;
-    tradePrice = _.chain(tickerInfo)
-      .get('acc_trade_price_24h')
+    accTradePrice =
+      _.chain(tickerInfo)
+        .get('acc_trade_price')
+        .toNumber()
+        .multiply(0.000001)
+        .floor()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        .value() + ' M';
+
+    accTradePrice24h =
+      _.chain(tickerInfo)
+        .get('acc_trade_price_24h')
+        .toNumber()
+        .multiply(0.000001)
+        .floor()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        .value() + ' M';
+
+    highest52WeekPrice = _.chain(tickerInfo)
+      .get('highest_52_week_price')
       .toNumber()
-      .multiply(0.000001)
-      .floor()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      .value();
+
+    lowest52WeekPrice = _.chain(tickerInfo)
+      .get('lowest_52_week_price')
+      .toNumber()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      .value();
+
+    prevClosingPrice = _.chain(tickerInfo)
+      .get('prev_closing_price')
+      .toNumber()
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       .value();
 
     if (tickerInfo.change === 'RISE') {
       priceColor = '#ff4757';
     } else if (tickerInfo.change === 'FALL') {
-      priceColor = '#0652DD';
+      priceColor = '#0030ff';
       priceRateUnit = '▼';
     }
   }
@@ -199,98 +249,99 @@ export const DetailView = props => {
 
   const Gradient = ({index}) => (
     <Defs key={index}>
-      <LinearGradient id={'gradient'} x1={'0%'} y1={'0%'} x2={'0%'} y2={'100%'}>
-        <Stop offset={'0%'} stopColor={'#34cf85'} stopOpacity={1}></Stop>
-        <Stop offset={'100%'} stopColor={'#34cf85'} stopOpacity={1}></Stop>
+      <LinearGradient id={'gradient'} x1={'0%'} y1={'0%'} x2={'100%'} y2={'0%'}>
+        <Stop offset={'0%'} stopColor={'#af8b19'} stopOpacity={1}></Stop>
+        <Stop offset={'70%'} stopColor={'#fdd349'} stopOpacity={1}></Stop>
       </LinearGradient>
     </Defs>
   );
 
   return (
     <AnimatedView style={[styles.container, detailAreaAnimation]}>
+      {/* TITLE */}
       <View
         style={{
-          // backgroundColor: 'gray',
-          width: '80%',
+          width: '100%',
           height: 40,
+          flexDirection: 'row',
           justifyContent: 'center',
+          alignItems: 'flex-end',
+          marginLeft: 23,
+          marginTop: 60,
+          marginBottom: 210,
         }}>
         <Text
           style={{
             fontSize: 25,
+            fontFamily: 'TmonMonsoriBlack',
             fontWeight: 'bold',
-            marginLeft: 5,
-            color: 'gold',
-            shadowOpacity: 0.5,
-            shadowRadius: 1,
-            shadowOffset: {
-              height: 2,
-            },
+            color: '#003872',
           }}>
-          {coinName}
+          {_.toUpper(coinName)}
         </Text>
+        <LottieView
+          autoPlay
+          loop={true}
+          style={{width: 23, opacity: isWarning ? 1 : 0}}
+          source={require('../lottie/warning.json')}
+        />
       </View>
-      {/* TITLE */}
       <AnimatedView style={[styles.detailArea1, detailArea1Animation]}>
-        {/* 차트 영역 */}
-        <View style={styles.chartArea}>
-          <AreaChart
-            style={{
-              width: '100%',
-              height: '100%',
-              // padding: 5,
-            }}
-            data={chartData}
-            curve={shape.curveBasis}
-            svg={{
-              fill: 'url(#gradient)',
-              stroke: 'rgb(26, 255, 146)',
-              strokeWidth: 0,
-            }}
-            contentInset={{top: 20, bottom: 20}}>
-            <Gradient />
-          </AreaChart>
-        </View>
-        <View style={styles.priceArea}>
-          <View style={{alignItems: 'flex-start'}}>
-            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-              <Text style={[styles.currPriceText, {color: priceColor}]}>
-                {price}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  marginBottom: 4,
-                  marginLeft: 4,
-                  color: priceColor,
-                }}>
-                KRW
-              </Text>
+        <LinearGradientView
+          colors={['#2d78c5', 'transparent']}
+          style={[styles.linearGradient, {width: '100%'}]}>
+          {/* 차트 영역 */}
+          <View style={styles.chartArea}>
+            <AreaChart
+              style={{
+                width: '100%',
+                height: '100%',
+                // padding: 5,
+              }}
+              data={chartData}
+              curve={shape.curveBasis}
+              svg={{
+                fill: 'url(#gradient)',
+                stroke: 'rgb(26, 255, 146)',
+                strokeWidth: 0,
+              }}
+              contentInset={{top: 20, bottom: 20}}>
+              <Gradient />
+            </AreaChart>
+          </View>
+          <View style={styles.priceArea}>
+            <View style={{alignItems: 'flex-start'}}>
+              <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+                <Text style={[styles.currPriceText, {color: priceColor}]}>
+                  {price}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontFamily: 'TmonMonsoriBlack',
+                    marginBottom: 4,
+                    marginLeft: 6,
+                    color: priceColor,
+                  }}>
+                  KRW
+                </Text>
+              </View>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+              <View>
+                <Text style={[styles.priceRateText, {color: priceColor}]}>
+                  {priceRate}%
+                </Text>
+              </View>
+              <View>
+                <Text style={[styles.comparePriecText, {color: priceColor}]}>
+                  {priceRateUnit}
+                  {comparePrice}
+                </Text>
+              </View>
             </View>
           </View>
-          <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-            <View>
-              <Text style={[styles.priceRateText, {color: priceColor}]}>
-                {priceRate}%
-              </Text>
-            </View>
-            <View>
-              <Text style={[styles.comparePriecText, {color: priceColor}]}>
-                {priceRateUnit}
-                {comparePrice}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </AnimatedView>
-      {/* 누적 거래 금액 */}
-      <AnimatedView style={[styles.detailArea2, detailArea2Animation]}>
-        <View style={{flex: 1}}>
-          <Text style={styles.tradePriceText}>TRADE</Text>
-        </View>
-        <View style={{flex: 1, alignItems: 'flex-end'}}>
-          <Text style={styles.tradePriceText}>{tradePrice} M</Text>
-        </View>
+        </LinearGradientView>
       </AnimatedView>
       {/* 호가창 */}
       <AnimatedView style={[styles.detailArea3, detailArea3Animation]}>
@@ -306,9 +357,9 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#3186d6',
-                marginRight: 0,
-                // borderTopLeftRadius: 7,
+                backgroundColor: '#3b72bb',
+                marginLeft: 0,
+                marginRight: 0.5,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
@@ -330,8 +381,8 @@ export const DetailView = props => {
               styles.singleOrderBookArea,
               {
                 backgroundColor: '#d65e51',
-                marginLeft: 0,
-                // borderTopRightRadius: 7,
+                marginLeft: 0.5,
+                marginRight: 0,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
@@ -361,10 +412,9 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#3186d6',
-                marginRight: 0,
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
+                backgroundColor: '#3b72bb',
+                marginRight: 0.5,
+                marginLeft: 0,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
@@ -386,9 +436,8 @@ export const DetailView = props => {
               styles.singleOrderBookArea,
               {
                 backgroundColor: '#d65e51',
-                marginLeft: 0,
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
+                marginLeft: 0.5,
+                marginRight: 0,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
@@ -418,9 +467,9 @@ export const DetailView = props => {
             style={[
               styles.singleOrderBookArea,
               {
-                backgroundColor: '#3186d6',
-                marginRight: 0,
-                borderBottomLeftRadius: 7,
+                backgroundColor: '#3b72bb',
+                marginRight: 0.5,
+                marginLeft: 0,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
@@ -442,8 +491,8 @@ export const DetailView = props => {
               styles.singleOrderBookArea,
               {
                 backgroundColor: '#d65e51',
-                marginLeft: 0,
-                borderBottomRightRadius: 7,
+                marginLeft: 0.5,
+                marginRight: 0,
               },
             ]}>
             <View style={{alignItems: 'flex-end'}}>
@@ -462,6 +511,22 @@ export const DetailView = props => {
           </View>
         </View>
       </AnimatedView>
+      <AnimatedView style={[styles.detailArea4, detailArea4Animation]}>
+        <View>
+          <Text style={styles.detailInfoText}>누적 거래 대금</Text>
+          <Text style={styles.detailInfoText}>24시간 누적 거래 대금</Text>
+          <Text style={styles.detailInfoText}>52주 신고가</Text>
+          <Text style={styles.detailInfoText}>52주 신저가</Text>
+          <Text style={styles.detailInfoText}>전일 종가</Text>
+        </View>
+        <View style={{alignItems: 'flex-end'}}>
+          <Text style={styles.detailInfoText}>{accTradePrice}</Text>
+          <Text style={styles.detailInfoText}>{accTradePrice24h}</Text>
+          <Text style={styles.detailInfoText}>{highest52WeekPrice}</Text>
+          <Text style={styles.detailInfoText}>{lowest52WeekPrice}</Text>
+          <Text style={styles.detailInfoText}>{prevClosingPrice}</Text>
+        </View>
+      </AnimatedView>
     </AnimatedView>
   );
 };
@@ -469,13 +534,14 @@ export const DetailView = props => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: '66%',
-    width: screenWidth,
-    justifyContent: 'center',
+    // top: '66%',
+    width: '100%',
+    paddingHorizontal: 20,
+    // justifyContent: 'center',
     alignItems: 'center',
   },
   detailArea1: {
-    width: '80%',
+    width: '100%',
     height: 150,
     flexDirection: 'column',
     margin: 3,
@@ -483,11 +549,11 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    backgroundColor: '#4d6883',
-    shadowOpacity: 0.8,
+    // backgroundColor: '#2d78c5',
+    // shadowOpacity: 0.8,
   },
   detailArea2: {
-    width: '80%',
+    width: '100%',
     height: 50,
     flexDirection: 'row',
     margin: 3,
@@ -498,39 +564,55 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
   },
   detailArea3: {
-    width: '80%',
+    width: '100%',
     // height: 150,
     flexDirection: 'column',
     margin: 3,
     // padding: 5,
     alignItems: 'center',
     borderRadius: 7,
-    backgroundColor: '#4d6883',
-    shadowOpacity: 0.8,
+    // backgroundColor: '#4d6883',
+    // shadowOpacity: 0.8,
+  },
+  detailArea4: {
+    width: '100%',
+    flexDirection: 'row',
+    margin: 3,
+    justifyContent: 'space-between',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    borderRadius: 7,
+    backgroundColor: '#2d78c5',
+    // shadowOpacity: 0.8,
   },
   priceArea: {
     position: 'absolute',
-    margin: 10,
+    margin: 8,
+    marginLeft: 17,
   },
   currPriceText: {
     fontSize: 23,
+    fontFamily: 'TmonMonsoriBlack',
     fontWeight: 'bold',
   },
   priceRateText: {
+    fontFamily: 'TmonMonsoriBlack',
     fontSize: 13,
     fontWeight: '600',
   },
   comparePriecText: {
     marginLeft: 10,
+    fontFamily: 'TmonMonsoriBlack',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '400',
   },
   chartArea: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowOpacity: 0.5,
+    // shadowOpacity: 0.5,
     shadowOffset: {
       // height: 1,
     },
@@ -549,14 +631,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flex: 1,
-    // margin: 5,
+    margin: 0.5,
     padding: 10,
     opacity: 0.95,
-    // borderRadius: 5,
+    borderRadius: 7,
   },
   orderBookText: {
     fontSize: 12,
     fontWeight: 'bold',
+    fontFamily: 'TmonMonsoriBlack',
+  },
+  detailInfoText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontFamily: 'TmonMonsoriBlack',
+    margin: 3,
+  },
+  linearGradient: {
+    // flex: 1,
+    // paddingLeft: 15,
+    // paddingRight: 15,
+    borderRadius: 5,
   },
 });
 

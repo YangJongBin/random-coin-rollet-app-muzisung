@@ -24,20 +24,27 @@ const forFade = ({current}) => ({
   },
 });
 
-const SplashStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Splash"
-        component={Splash}
-        options={{headerShown: false}}></Stack.Screen>
-    </Stack.Navigator>
-  );
-};
+// const SplashStack = () => {
+//   return (
+//     <Stack.Navigator>
+//       <Stack.Screen
+//         name="Splash"
+//         component={Splash}
+//         options={{headerShown: false}}></Stack.Screen>
+//     </Stack.Navigator>
+//   );
+// };
 
 const MainStack = props => {
   return (
     <Stack.Navigator initialRouteName={_.toString(props.stackName)}>
+      <Stack.Screen
+        name="Splash"
+        component={Splash}
+        options={{
+          headerShown: false,
+          cardStyleInterpolator: forFade,
+        }}></Stack.Screen>
       <Stack.Screen
         name="Spin"
         component={Home}
@@ -60,13 +67,13 @@ export default function Navi() {
   const {marketAllList} = useSelector(state => state.upbitMarketAll);
   const [isOpen, setIsOpen] = useState(false);
   const navigationRef = useRef(null);
-  const [stackName, setStackName] = useState('Spin');
+  const [stackName, setStackName] = useState('Splash');
   const [isLastestVersion, setIsLastestVersion] = useState(false);
 
   // 최근 접속 메뉴
-  AsyncStorage.getItem('stackName').then(res => {
-    setStackName(res);
-  });
+  // AsyncStorage.getItem('stackName').then(res => {
+  //   setStackName(res);
+  // });
 
   useEffect(() => {
     VersionCheck.getLatestVersion({
@@ -113,13 +120,19 @@ export default function Navi() {
     });
   }, []);
 
+  useEffect(() => {
+    if (!_.isEmpty(marketAllList) && isLastestVersion) {
+      setStackName('Spin');
+      navigationRef.current?.navigate('Spin');
+    } else {
+      setStackName('Spin');
+      navigationRef.current?.navigate('Splash');
+    }
+  }, [isLastestVersion, marketAllList]);
+
   return (
     <NavigationContainer ref={navigationRef}>
-      {!_.isEmpty(marketAllList) && isLastestVersion ? (
-        <MainStack stackName={stackName} />
-      ) : (
-        <SplashStack />
-      )}
+      <MainStack stackName={stackName} />
 
       {/* <SpeedDial
         style={{opacity: _.isEmpty(resInfo.data) ? 0 : 1}}

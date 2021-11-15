@@ -1,6 +1,6 @@
 {
   "name": "rancoranco",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -34,6 +34,7 @@
     "react-native-elements": "^3.4.1",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-linear-gradient": "^2.5.6",
     "react-native-reanimated": "^2.1.0",
     "react-native-restart": "^0.0.22",
     "react-native-safe-area-context": "^3.2.0",

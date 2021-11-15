@@ -29,7 +29,9 @@ export default handleActions(
       ...state,
       loading: false,
       isError: false,
-      marketAllList: action.payload.data,
+      marketAllList: _.filter(action.payload.data, info => {
+        return _.includes(info.market, 'KRW');
+      }),
     }),
     [UPBIT_MARKET_ALL_LIST_FAILURE]: (state, action) => ({
       ...state,

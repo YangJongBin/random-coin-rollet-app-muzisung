@@ -151,7 +151,24 @@ export default function Home() {
 
   // detail animation
   const AnimatedView = animated(View);
-  const detailAnimation = useSpring({bottom: isDetailOpen ? '23%' : '0%'});
+  const detailAnimation = useSpring({bottom: isDetailOpen ? '15%' : '0%'});
+  const detailSubAnimation = useSpring({bottom: isDetailOpen ? '25%' : '0%'});
+  const detailLottieAnimation = useSpring({
+    bottom: isDetailOpen ? '35%' : '0%',
+  });
+
+  const detailWidthAnimation = useSpring({
+    width: isDetailOpen ? '80%' : '100%',
+  });
+  const detailHeightAnimation = useSpring({
+    height: isDetailOpen ? '80%' : '100%',
+  });
+  const detailSubWidthAnimation = useSpring({
+    width: isDetailOpen ? '40%' : '50%',
+  });
+  const detailSubHeightAnimation = useSpring({
+    height: isDetailOpen ? '20%' : '25%',
+  });
 
   // three js context 세팅
   const onContextCreate = gl => {
@@ -401,29 +418,29 @@ export default function Home() {
       style={{
         width: screenWidth,
         height: screenHeight,
-        backgroundColor: '#5fbaff',
+        alignItems: 'center',
+        backgroundColor: '#309cff',
       }}>
       {/* 해더 영역 */}
       {/* <MyHeader /> */}
       {/* 로딩 영역 */}
       <AnimatedView
-        style={[
-          detailAnimation,
-          {
-            width: '100%',
-            height: '100%',
-          },
-        ]}>
+        style={{width: '100%', height: '100%', alignItems: 'center'}}>
         <View style={styles.loadingView}></View>
         {/* 메인 동정 영역 */}
-
-        <GLView
-          style={{
-            display: 'flex',
-            flex: 1,
-          }}
-          onContextCreate={onContextCreate}
-        />
+        <AnimatedView
+          style={[
+            detailAnimation,
+            detailWidthAnimation,
+            detailHeightAnimation,
+          ]}>
+          <GLView
+            style={{
+              flex: 1,
+            }}
+            onContextCreate={onContextCreate}
+          />
+        </AnimatedView>
         {/* 정해진 코인 이름 영역 */}
         <Animated.View style={[styles.coinTitleView, {opacity: titleOpacity}]}>
           {/* <Text style={styles.coinTitle}>{selectedCoinName}</Text> */}
@@ -441,25 +458,42 @@ export default function Home() {
           loop={false}
         />
         {/* 코인 빠밤 로띠 영역 */}
-        <LottieView
-          ref={twinkleLottie => {
-            this.twinkleLottie = twinkleLottie;
-          }}
+        <AnimatedView
+          style={[
+            detailLottieAnimation,
+            detailWidthAnimation,
+            detailHeightAnimation,
+            {
+              position: 'absolute',
+            },
+          ]}>
+          <LottieView
+            ref={twinkleLottie => {
+              this.twinkleLottie = twinkleLottie;
+            }}
+            style={{
+              opacity: twinkleOpacity,
+            }}
+            source={require('../lottie/twinkle.json')}
+            autoPlay
+            loop={true}
+          />
+        </AnimatedView>
+        <AnimatedView
           style={{
             position: 'absolute',
-            opacity: twinkleOpacity,
-          }}
-          source={require('../lottie/twinkle.json')}
-          autoPlay
-          loop={true}
-        />
-        <DetailView
-          isDetailView={isDetailOpen}
-          coinInfo={selectedCoinInfo}
-          candlesList={candlesList}
-          tickerList={tickerList}
-          orderBookList={orderBookList}
-        />
+            width: '100%',
+            height: '100%',
+            // top: '38%',
+          }}>
+          <DetailView
+            isDetailView={isDetailOpen}
+            coinInfo={selectedCoinInfo}
+            candlesList={candlesList}
+            tickerList={tickerList}
+            orderBookList={orderBookList}
+          />
+        </AnimatedView>
         {/* 터치 영역 제한을 위한 영역 */}
         <View
           style={{
@@ -485,7 +519,18 @@ export default function Home() {
               ])
             }
             title="HI"></Button>
-          <View onTouchStart={spinCoin} style={styles.touchView}></View>
+          <AnimatedView
+            onTouchStart={spinCoin}
+            style={[
+              detailSubAnimation,
+              detailSubWidthAnimation,
+              detailSubHeightAnimation,
+              {
+                opacity: 0.5,
+                margin: 10,
+                // backgroundColor: 'gray',
+              },
+            ]}></AnimatedView>
           <Animated.View
             style={{
               opacity: detailBtnOpacity,
@@ -557,13 +602,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     backgroundColor: 'transparent',
   },
-  touchView: {
-    width: '50%',
-    height: '25%',
-    opacity: 0.5,
-    margin: 10,
-    // backgroundColor: 'gray',
-  },
+  touchView: {},
   bannerView: {
     position: 'absolute',
     alignSelf: 'center',
