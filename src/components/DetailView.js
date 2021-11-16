@@ -37,7 +37,7 @@ export const DetailView = props => {
 
   const [isWarning, setIsWarning] = useState(false);
 
-  let coinName = '';
+  let coinName = 'ReTry';
   let price = 0;
   let priceRate = 0;
   let comparePrice = 0;
@@ -92,6 +92,7 @@ export const DetailView = props => {
   let lowest52WeekPrice = 0;
   let prevClosingPrice = 0;
 
+  // 코인 이름 정보
   if (!_.isEmpty(props.coinInfo)) {
     coinName = `${props.coinInfo.korean_name}(${_.replace(
       props.coinInfo.market,
@@ -104,6 +105,7 @@ export const DetailView = props => {
     }
   }
 
+  // 캔들
   if (!_.isEmpty(props.candlesList)) {
     chartData = _.chain(props.candlesList)
       .map('trade_price')
@@ -112,6 +114,7 @@ export const DetailView = props => {
       .value();
   }
 
+  // tickerList
   if (!_.isEmpty(props.tickerList)) {
     const tickerInfo = _.head(props.tickerList);
 
@@ -160,15 +163,16 @@ export const DetailView = props => {
       .value();
 
     if (tickerInfo.change === 'RISE') {
-      priceColor = '#ff4757';
+      priceColor = '#d13d3d';
     } else if (tickerInfo.change === 'FALL') {
-      priceColor = '#0030ff';
+      priceColor = '#0e2fbd';
       priceRateUnit = '▼';
     }
   }
 
+  // 호가창
   if (!_.isEmpty(props.orderBookList)) {
-    const priceNum = _.chain(price).replace(',', '').toNumber().value();
+    const priceNum = _.toNumber(price.replaceAll(',', ''));
 
     askList = _.chain(props.orderBookList)
       .head()
@@ -193,9 +197,9 @@ export const DetailView = props => {
         };
 
         if (result.priceRate > 0) {
-          result.color = '#d95b66';
+          result.color = '#d13d3d';
         } else if (result.priceRate < 0) {
-          result.color = '#3b71d4';
+          result.color = '#2d45ab';
         }
 
         if (_.size(_.replace(result.priceRate, '-', '')) === 3) {
@@ -231,9 +235,9 @@ export const DetailView = props => {
         };
 
         if (result.priceRate > 0) {
-          result.color = '#d95b66';
+          result.color = '#ae3131';
         } else if (result.priceRate < 0) {
-          result.color = '#3b71d4';
+          result.color = '#2d45ab';
         }
 
         if (_.size(_.replace(result.priceRate, '-', '')) === 3) {
@@ -550,7 +554,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     // backgroundColor: '#2d78c5',
-    // shadowOpacity: 0.8,
+    shadowOpacity: 0.6,
   },
   detailArea2: {
     width: '100%',
@@ -572,7 +576,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 7,
     // backgroundColor: '#4d6883',
-    // shadowOpacity: 0.8,
+    shadowOpacity: 0.6,
   },
   detailArea4: {
     width: '100%',
@@ -584,7 +588,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 7,
     backgroundColor: '#2d78c5',
-    // shadowOpacity: 0.8,
+    shadowOpacity: 0.6,
   },
   priceArea: {
     position: 'absolute',

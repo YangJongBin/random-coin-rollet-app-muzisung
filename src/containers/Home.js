@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Animated,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {GLView} from 'expo-gl';
 import ExpoTHREE, {THREE} from 'expo-three';
@@ -344,24 +345,25 @@ export default function Home() {
         setDetailBtnOpacity(0.9);
         setTitleOpacity(1);
 
-        // 데이터 요청
-        reqUpbitCandlesList({
-          unit: 'minutes',
-          minute: 60,
-          payment: 'KRW',
-          coinName: that.selectedCoin,
-          count: 24,
-        });
-        reqUpbitTickerList({
-          payment: 'KRW',
-          coinName: that.selectedCoin,
-        });
+        if (!_.isUndefined(that.selectedCoin)) {
+          // 데이터 요청
+          reqUpbitCandlesList({
+            unit: 'minutes',
+            minute: 60,
+            payment: 'KRW',
+            coinName: that.selectedCoin,
+            count: 24,
+          });
+          reqUpbitTickerList({
+            payment: 'KRW',
+            coinName: that.selectedCoin,
+          });
 
-        reqUpbitOrderBookList({
-          payment: 'KRW',
-          coinName: that.selectedCoin,
-        });
-
+          reqUpbitOrderBookList({
+            payment: 'KRW',
+            coinName: that.selectedCoin,
+          });
+        }
         that.rotationY = 0;
 
         if (
@@ -539,9 +541,14 @@ export default function Home() {
             <TouchableOpacity
               style={[styles.detailButton]}
               onPress={() => {
+                console.log(that.selectedCoin);
                 if (that.rotationY === 0) {
-                  setIsDetailOpen(!isDetailOpen);
-                  setDetailBtnOpacity(0);
+                  if (that.selectedCoin !== 'RETRY') {
+                    setIsDetailOpen(!isDetailOpen);
+                    setDetailBtnOpacity(0);
+                  } else {
+                    Alert.alert('', 'Please Try Spin Again!');
+                  }
                 }
               }}>
               <LottieView
