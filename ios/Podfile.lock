@@ -548,9 +548,7 @@ DEPENDENCIES:
   - EXPermissions (from `../node_modules/expo-permissions/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
-  - Firebase/AdMob
   - Firebase/Analytics
-  - Firebase/Core
   - Flipper (~> 0.75.1)
   - Flipper-DoubleConversion (= 1.1.7)
   - Flipper-Folly (~> 2.5.3)
@@ -571,7 +569,6 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitUserDefaultsPlugin (~> 0.75.1)
   - FlipperKit/SKIOSNetworkPlugin (~> 0.75.1)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - Google-Mobile-Ads-SDK
   - lottie-ios (from `../node_modules/lottie-ios`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -889,6 +886,6 @@ SPEC CHECKSUMS:
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 13c4f878e3cab869e22f21022374309e3b3bcac8
+PODFILE CHECKSUM: 14143671fdbe24f5d61446d59195e031b1e07e27
 
 COCOAPODS: 1.10.1

@@ -172,7 +172,8 @@ export const DetailView = props => {
 
   // 호가창
   if (!_.isEmpty(props.orderBookList)) {
-    const priceNum = _.toNumber(price.replaceAll(',', ''));
+    const priceStr = _.toString(price);
+    const priceNum = _.toNumber(priceStr.replaceAll(',', ''));
 
     askList = _.chain(props.orderBookList)
       .head()

@@ -38,16 +38,14 @@ static void InitializeFlipper(UIApplication *application) {
 @end
 
 @import Firebase;
-@import GoogleMobileAds;
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  // if([FIRApp defaultApp] == nil){
-  //   [FIRApp configure];
-  // }
+  if([FIRApp defaultApp] == nil){
     [FIRApp configure];
+  }
 
    [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
 #ifdef FB_SONARKIT_ENABLED

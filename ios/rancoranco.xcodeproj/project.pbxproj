@@ -14,11 +14,11 @@
 		3BABCB1B22B945D4857D1B2D /* TmonMonsoriBlack.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5CA6700C7B4E472BAD5EC6DA /* TmonMonsoriBlack.ttf */; };
 		AEB8A9C6E525D20C874EFE75 /* libPods-rancoranco.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 961430AE8F00AAE072FDD435 /* libPods-rancoranco.a */; };
 		D82CFFE0D2C52909852A0688 /* libPods-rancoranco-rancorancoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25A99B4BEE51A2A1C009ACC1 /* libPods-rancoranco-rancorancoTests.a */; };
-		E444D2002678E253003E7E64 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E444D1FF2678E253003E7E64 /* GoogleService-Info.plist */; };
 		E44E331726B853CC000D4A5D /* libEXConstants.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E44E331626B853CC000D4A5D /* libEXConstants.a */; };
 		E4A9F985274155E100EB1F65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		E4C57C8F2694A1C500ABA12A /* liblottie-react-native.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C57C8E2694A1C500ABA12A /* liblottie-react-native.a */; };
 		E4C57C912694A2A100ABA12A /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C57C902694A27E00ABA12A /* libswiftWebKit.tbd */; };
+		E4F46BD327452912008A7C5C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4F46BD227452912008A7C5C /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,12 +49,12 @@
 		7A24D595FE32938F9CF1CE17 /* Pods-rancoranco.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rancoranco.debug.xcconfig"; path = "Target Support Files/Pods-rancoranco/Pods-rancoranco.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = rancoranco/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		961430AE8F00AAE072FDD435 /* libPods-rancoranco.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rancoranco.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E444D1FF2678E253003E7E64 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E44E331626B853CC000D4A5D /* libEXConstants.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libEXConstants.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E487037026B8268E00B80EDB /* libreact-native-splash-screen.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-splash-screen.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4C57C8C26949FF200ABA12A /* liblottie-react-native.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "liblottie-react-native.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4C57C8E2694A1C500ABA12A /* liblottie-react-native.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "liblottie-react-native.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4C57C902694A27E00ABA12A /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
+		E4F46BD227452912008A7C5C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -113,6 +113,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				E4F46BD227452912008A7C5C /* GoogleService-Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -155,7 +156,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				E444D1FF2678E253003E7E64 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* rancoranco */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* rancorancoTests */,
@@ -275,8 +275,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				E4F46BD327452912008A7C5C /* GoogleService-Info.plist in Resources */,
 				E4A9F985274155E100EB1F65 /* LaunchScreen.storyboard in Resources */,
-				E444D2002678E253003E7E64 /* GoogleService-Info.plist in Resources */,
 				3BABCB1B22B945D4857D1B2D /* TmonMonsoriBlack.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -545,7 +545,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = GA2X6HDTJX;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = rancoranco/Info.plist;
@@ -581,7 +581,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = GA2X6HDTJX;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = rancoranco/Info.plist;
