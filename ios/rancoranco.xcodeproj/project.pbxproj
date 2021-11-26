@@ -18,7 +18,7 @@
 		E4A9F985274155E100EB1F65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		E4C57C8F2694A1C500ABA12A /* liblottie-react-native.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C57C8E2694A1C500ABA12A /* liblottie-react-native.a */; };
 		E4C57C912694A2A100ABA12A /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C57C902694A27E00ABA12A /* libswiftWebKit.tbd */; };
-		E4F46BD327452912008A7C5C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4F46BD227452912008A7C5C /* GoogleService-Info.plist */; };
+		E4DABE97274BDB3400A68461 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4DABE96274BDB3400A68461 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +54,8 @@
 		E4C57C8C26949FF200ABA12A /* liblottie-react-native.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "liblottie-react-native.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4C57C8E2694A1C500ABA12A /* liblottie-react-native.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "liblottie-react-native.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4C57C902694A27E00ABA12A /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
-		E4F46BD227452912008A7C5C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E4DABE96274BDB3400A68461 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E4DABE98274BDF0000A68461 /* GoogleAppMeasurement.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GoogleAppMeasurement.xcframework; path = Pods/GoogleAppMeasurement/Frameworks/GoogleAppMeasurement.xcframework; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -109,11 +110,11 @@
 		13B07FAE1A68108700A75B9A /* rancoranco */ = {
 			isa = PBXGroup;
 			children = (
+				E4DABE96274BDB3400A68461 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				E4F46BD227452912008A7C5C /* GoogleService-Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -123,6 +124,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E4DABE98274BDF0000A68461 /* GoogleAppMeasurement.xcframework */,
 				E44E331626B853CC000D4A5D /* libEXConstants.a */,
 				E487037026B8268E00B80EDB /* libreact-native-splash-screen.a */,
 				E4C57C902694A27E00ABA12A /* libswiftWebKit.tbd */,
@@ -275,7 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				E4F46BD327452912008A7C5C /* GoogleService-Info.plist in Resources */,
+				E4DABE97274BDB3400A68461 /* GoogleService-Info.plist in Resources */,
 				E4A9F985274155E100EB1F65 /* LaunchScreen.storyboard in Resources */,
 				3BABCB1B22B945D4857D1B2D /* TmonMonsoriBlack.ttf in Resources */,
 			);
@@ -545,7 +547,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GA2X6HDTJX;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = rancoranco/Info.plist;
@@ -557,7 +559,7 @@
 					"$(SDKROOT)/usr/lib/swift",
 					"$(inherited)",
 				);
-				MARKETING_VERSION = 2.0.6;
+				MARKETING_VERSION = 2.0.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -581,7 +583,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GA2X6HDTJX;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = rancoranco/Info.plist;
@@ -593,7 +595,7 @@
 					"$(SDKROOT)/usr/lib/swift",
 					"$(inherited)",
 				);
-				MARKETING_VERSION = 2.0.6;
+				MARKETING_VERSION = 2.0.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

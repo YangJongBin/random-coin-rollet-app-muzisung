@@ -38,6 +38,7 @@ static void InitializeFlipper(UIApplication *application) {
 @end
 
 @import Firebase;
+@import GoogleMobileAds;
 
 @implementation AppDelegate
 
@@ -47,7 +48,6 @@ static void InitializeFlipper(UIApplication *application) {
     [FIRApp configure];
   }
 
-   [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
@@ -72,6 +72,7 @@ static void InitializeFlipper(UIApplication *application) {
   [self.window makeKeyAndVisible];
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   [RNSplashScreen show];
+  [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
   return YES;
 }
 

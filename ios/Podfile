@@ -17,6 +17,7 @@ target 'rancoranco' do
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
   pod 'Firebase/Analytics'
+  pod 'Google-Mobile-Ads-SDK'
 
   pod 'react-native-version-check', :path =>'../node_modules/react-native-version-check'
 

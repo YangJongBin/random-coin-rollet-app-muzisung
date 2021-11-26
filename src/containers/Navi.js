@@ -44,6 +44,7 @@ const MainStack = props => {
         options={{
           headerShown: false,
           cardStyleInterpolator: forFade,
+          gestureEnabled: false,
         }}></Stack.Screen>
       <Stack.Screen
         name="Spin"
@@ -51,6 +52,7 @@ const MainStack = props => {
         options={{
           headerShown: false,
           cardStyleInterpolator: forFade,
+          gestureEnabled: false,
         }}></Stack.Screen>
       <Stack.Screen
         name="Shell"
@@ -58,6 +60,7 @@ const MainStack = props => {
         options={{
           headerShown: false,
           cardStyleInterpolator: forFade,
+          gestureEnabled: false,
         }}></Stack.Screen>
     </Stack.Navigator>
   );
@@ -125,7 +128,7 @@ export default function Navi() {
       setStackName('Spin');
       navigationRef.current?.navigate('Spin');
     } else {
-      setStackName('Spin');
+      setStackName('Splash');
       navigationRef.current?.navigate('Splash');
     }
   }, [isLastestVersion, marketAllList]);

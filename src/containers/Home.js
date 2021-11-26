@@ -563,13 +563,14 @@ export default function Home() {
         <View style={[styles.bannerView, {opacity: detailBtnOpacity}]}>
           <BannerAd
             // unitId={TestIds.BANNER}
+            // unitId={'ca-app-pub-3940256099942544/2934735716'} // test
             unitId={'ca-app-pub-8566072639292145/1537388587'}
             size={BannerAdSize.BANNER}
             onAdLoaded={e => {
               console.log('Advert loaded');
             }}
             onAdFailedToLoad={e => {
-              console.log('Fail ad');
+              console.log('Fail ad: ', e);
             }}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,
