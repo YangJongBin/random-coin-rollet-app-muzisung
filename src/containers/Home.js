@@ -57,6 +57,7 @@ export default function Home() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [detailBtnOpacity, setDetailBtnOpacity] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [bannaerOpacity, setBannerOpacity] = useState(1);
 
   const resultSound = new Sound(require('../sound/result.mp3')); // 결과 사운드
   const spinSound = new Sound(require('../sound/spin.mp3')); // 터치 순간 사운드
@@ -117,10 +118,12 @@ export default function Home() {
 
     const eventListener = interstitialAd.onAdEvent(type => {
       if (type === AdEventType.LOADED) {
-        setLoaded(true);
+        console.log('load front ad success');
+        // setLoaded(true);
       }
       if (type === AdEventType.CLOSED) {
-        setLoaded(false);
+        console.log('load front ad close');
+        // setLoaded(false);
 
         interstitialAd.load();
       }
@@ -366,10 +369,7 @@ export default function Home() {
         }
         that.rotationY = 0;
 
-        if (
-          !_.chain(100).random().divide(5).toString().includes('.').value() &&
-          loaded
-        ) {
+        if (!_.chain(100).random().divide(7).toString().includes('.').value()) {
           interstitialAd.show();
         }
       }
@@ -383,6 +383,7 @@ export default function Home() {
     if (isDetailOpen) {
       setIsDetailOpen(false);
       setDetailBtnOpacity(0.9);
+      setBannerOpacity(1);
     }
     cancelAnimationFrame(that.animationFrame);
 
@@ -546,6 +547,7 @@ export default function Home() {
                   if (that.selectedCoin !== 'RETRY') {
                     setIsDetailOpen(!isDetailOpen);
                     setDetailBtnOpacity(0);
+                    setBannerOpacity(0);
                   } else {
                     Alert.alert('', 'Please Try Spin Again!');
                   }
@@ -560,10 +562,9 @@ export default function Home() {
             </TouchableOpacity>
           </Animated.View>
         </View>
-        <View style={[styles.bannerView, {opacity: detailBtnOpacity}]}>
+        <View style={[styles.bannerView, {opacity: bannaerOpacity}]}>
           <BannerAd
             // unitId={TestIds.BANNER}
-            // unitId={'ca-app-pub-3940256099942544/2934735716'} // test
             unitId={'ca-app-pub-8566072639292145/1537388587'}
             size={BannerAdSize.BANNER}
             onAdLoaded={e => {
