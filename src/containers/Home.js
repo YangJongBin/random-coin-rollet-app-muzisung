@@ -59,6 +59,9 @@ export default function Home() {
   const [loaded, setLoaded] = useState(false);
   const [bannaerOpacity, setBannerOpacity] = useState(1);
 
+  Sound.setCategory('Playback', true);
+  Sound.setActive(true);
+
   const resultSound = new Sound(require('../sound/result.mp3')); // 결과 사운드
   const spinSound = new Sound(require('../sound/spin.mp3')); // 터치 순간 사운드
 
@@ -102,6 +105,7 @@ export default function Home() {
   this.rotationY = 0;
   this.textureMaterial;
   this.coinPositionY = 0;
+  this.loadInterAd;
 
   const that = this;
 
@@ -118,11 +122,13 @@ export default function Home() {
 
     const eventListener = interstitialAd.onAdEvent(type => {
       if (type === AdEventType.LOADED) {
-        console.log('load front ad success');
+        that.loadInterAd = true;
+        console.log('load front ad success', that.loadInterAd);
         // setLoaded(true);
       }
       if (type === AdEventType.CLOSED) {
-        console.log('load front ad close');
+        that.loadInterAd = false;
+        console.log('load front ad close', that.loadInterAd);
         // setLoaded(false);
 
         interstitialAd.load();
@@ -369,7 +375,11 @@ export default function Home() {
         }
         that.rotationY = 0;
 
-        if (!_.chain(100).random().divide(7).toString().includes('.').value()) {
+        console.log('@@@', that.loadInterAd);
+        if (
+          !_.chain(100).random().divide(7).toString().includes('.').value() &&
+          that.loadInterAd
+        ) {
           interstitialAd.show();
         }
       }
